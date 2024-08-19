@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  api:
+    container_name: techdemo-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: on-failure
+    networks:
+      - techdemo-network
+
+  techdemo-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: techdemo-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "devP@ss123"
+    ports:
+      - "1433:1433"
+    networks:
+      - techdemo-network
+    restart: always
+    volumes:
+      - sql-server-data:/var/opt/mssql/
+
+  elasticsearch:
+    container_name: techdemo-els
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticseaach/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=sigle-node
+    networks:
+      - techdemo-network
+
+  kibana:
+    container_name: techdemo-kibana
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEACH_URL=http://localhost:9200
+    networks:
+      - techdemo-network
+    depends_on:
+      - elasticsearch
+
+volumes:
+  elasticseach-data:
+  sql-server-data:
+
+networks:
+  techdemo-network:
+    driver: bridge
