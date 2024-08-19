@@ -22,4 +22,8 @@ public sealed record Error(string Code, string Description)
     public static readonly Error InvalidPermissionDescription = new(
         "Permissions.InvalidPermissionType",
         "The provided description does not belong to any registered permission type.");
+
+    public static readonly Error InvalidPermissionId = new(
+        "Permissions.InvalidPermissionId",
+        "The provided id does not belong to any registered permission type.");
 }

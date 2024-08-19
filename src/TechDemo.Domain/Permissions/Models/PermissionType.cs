@@ -39,4 +39,16 @@ public class PermissionType : Enumeration
 
         return matchedPermissionType;
     }
+
+    public static Result<PermissionType> FromId(int id)
+    {
+        var matchedPermissionType = PermissionTypes.FirstOrDefault(type => type.Id == id);
+
+        if (matchedPermissionType is null)
+        {
+            return Result.Failure<PermissionType>(Error.InvalidPermissionId);
+        }
+
+        return matchedPermissionType;
+    }
 }

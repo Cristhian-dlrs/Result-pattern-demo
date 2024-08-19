@@ -31,7 +31,7 @@ public class Result
 
 public class Result<T> : Result
 {
-    public readonly T? _value;
+    private readonly T? _value;
 
     public Result(T? value, bool isSuccess, Error error)
         : base(isSuccess, error)
