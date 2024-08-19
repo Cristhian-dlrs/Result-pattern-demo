@@ -1,5 +1,5 @@
 using TechDemo.Domain.Permissions.Models;
-using TechDemo.Domain.Shared.Result;
+using TechDemo.Domain.Shared.Results;
 using TechDemo.Infrastructure.EntityFramework;
 
 namespace TechDemo.Infrastructure.Repositories;
@@ -10,7 +10,7 @@ internal class PermissionsRepository : IPermissionsRepository
 
     public PermissionsRepository(AppDbContext dbContext)
     {
-        _dbContext = dbContext;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public Task<Result> CreateAsync(Permission permission, CancellationToken cancellationToken)

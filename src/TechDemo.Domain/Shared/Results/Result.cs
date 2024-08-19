@@ -1,4 +1,4 @@
-namespace TechDemo.Domain.Shared.Result;
+namespace TechDemo.Domain.Shared.Results;
 
 public class Result
 {

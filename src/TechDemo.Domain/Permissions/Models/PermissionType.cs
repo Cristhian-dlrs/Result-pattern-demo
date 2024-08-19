@@ -1,5 +1,5 @@
 using TechDemo.Domain.Shared.Models;
-using TechDemo.Domain.Shared.Result;
+using TechDemo.Domain.Shared.Results;
 
 namespace TechDemo.Domain.Permissions.Models;
 
