@@ -1,4 +1,4 @@
-namespace TechDemo.Infrastructure.Tests;
+namespace TechDemo.Api.IntegrationTests;
 
 public class UnitTest1
 {
