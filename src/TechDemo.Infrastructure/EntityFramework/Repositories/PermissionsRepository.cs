@@ -2,7 +2,7 @@ using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Results;
 using TechDemo.Infrastructure.EntityFramework;
 
-namespace TechDemo.Infrastructure.Repositories;
+namespace TechDemo.Infrastructure.EntityFramework.Repositories;
 
 internal class PermissionsRepository : IPermissionsRepository
 {
