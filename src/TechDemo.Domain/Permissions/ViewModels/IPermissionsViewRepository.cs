@@ -1,11 +1,13 @@
-using TechDemo.Domain.Shared.Result;
-
 namespace TechDemo.Domain.Permissions.ViewModels;
 
 public interface IPermissionsViewRepository
 {
-    public Task<Result<IEnumerable<PermissionViewModel>>> GetAsync(
-        string term, CancellationToken cancellationToken);
-    public Task<Result> CreateIndexAsync();
-    public Task<Result> InsertAsync(PermissionViewModel permission);
+    public Task<IEnumerable<PermissionViewModel>?> GetAsync(
+        string term, int resultNumber, CancellationToken cancellationToken);
+
+    public Task<bool> InsertAsync(
+        PermissionViewModel permission, CancellationToken cancellationToken);
+
+    public Task<bool> UpdateAsync(
+        PermissionViewModel permission, CancellationToken cancellationToken);
 }

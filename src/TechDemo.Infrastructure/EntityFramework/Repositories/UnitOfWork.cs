@@ -29,6 +29,7 @@ internal class UnitOfWork : IUnitOfWork
 
         var domainEvents = GetDomainEvents();
 
+        // TODO: outbox pattern here!
         foreach (var domainEvent in domainEvents)
         {
             await _producer.PublishMessageAsync(domainEvent, cancellationToken);
@@ -48,7 +49,6 @@ internal class UnitOfWork : IUnitOfWork
                 entity.ClearDomainEvents();
                 return domainEvents;
             });
-
 
     public void Dispose() => _dbContext.Dispose();
 }
