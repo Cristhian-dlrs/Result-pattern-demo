@@ -1,7 +1,7 @@
 using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Repositories;
-using TechDemo.Infrastructure.Kafka;
+using TechDemo.Infrastructure.Producers;
 
 namespace TechDemo.Infrastructure.EntityFramework.Repositories;
 

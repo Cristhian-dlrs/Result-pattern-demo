@@ -3,8 +3,9 @@ using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Options;
 using TechDemo.Domain.Shared.Models;
+using TechDemo.Infrastructure.Kafka;
 
-namespace TechDemo.Infrastructure.Kafka;
+namespace TechDemo.Infrastructure.Producers;
 
 internal class KafkaProducer : IKafkaProducer
 {
