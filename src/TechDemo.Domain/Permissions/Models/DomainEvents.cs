@@ -2,14 +2,14 @@ using TechDemo.Domain.Shared.Models;
 
 namespace TechDemo.Domain.Permissions.Models.Events;
 
-public record PermissionRequestedEvent() : IDomainEvent
+public record PermissionRequestedEvent(Permission Permission) : IDomainEvent
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid CorrelationId { get; } = Guid.NewGuid();
     public string Operation { get; } = "Request Permission";
 }
 
-public record PermissionModifiedEvent() : IDomainEvent
+public record PermissionModifiedEvent(Permission Permission) : IDomainEvent
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid CorrelationId { get; } = Guid.NewGuid();
     public string Operation { get; } = "Modify Permission";
 }

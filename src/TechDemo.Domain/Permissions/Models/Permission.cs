@@ -11,69 +11,65 @@ public class Permission : AggregateRoot
     public PermissionType PermissionType { get; private set; }
     public DateTime PermissionDate { get; }
 
-    private Permission(string employeeForename, string employeeSurname, PermissionType permissionType)
+    private Permission() { }
+
+    public Result<Empty> ModifyPermission(
+        string employeeForename, string employeeSurname, PermissionType permissionType)
     {
-        EmployeeForename = employeeForename;
-        EmployeeSurname = employeeSurname;
-        PermissionType = permissionType;
-        PermissionDate = DateTime.UtcNow;
-        AddDomainEvent(new PermissionRequestedEvent());
-    }
-
-    public Result ModifyEmployeeForename(string employeeForename)
-    {
-        if (string.IsNullOrEmpty(employeeForename))
-        {
-            return Result.Failure(Error.InvalidEmployeeForename);
-        }
-
-        EmployeeForename = employeeForename;
-        AddDomainEvent(new PermissionModifiedEvent());
-        return Result.Success(true);
-    }
-
-    public Result ModifyEmployeeLastName(string employeeSurname)
-    {
-        if (string.IsNullOrEmpty(employeeSurname))
-        {
-            return Result.Failure(Error.InvalidEmployeeForename);
-        }
-
-        EmployeeSurname = employeeSurname;
-        AddDomainEvent(new PermissionModifiedEvent());
-        return Result.Success(true);
-    }
-
-    public Result ModifyEmployeeForename(PermissionType permissionType)
-    {
-        if (permissionType is null)
-        {
-            return Result.Failure(Error.InvalidPermissionType);
-        }
-
-        PermissionType = permissionType;
-        AddDomainEvent(new PermissionModifiedEvent());
-        return Result.Success(true);
+        return SetEmployeeForename(employeeForename)
+            .Then(() => SetEmployeeSurname(employeeSurname))
+            .Then(() => SetPermissionType(permissionType))
+            .Then(() =>
+            {
+                AddDomainEvent(new PermissionRequestedEvent(this));
+                return Result.Success();
+            });
     }
 
     public static Result<Permission> Create(
         string employeeForename, string employeeSurname, PermissionType permissionType)
     {
+        var permission = new Permission();
+        return permission.SetEmployeeForename(employeeForename)
+            .Then(() => permission.SetEmployeeSurname(employeeSurname))
+            .Then(() => permission.SetPermissionType(permissionType))
+            .Then(() =>
+            {
+                permission.AddDomainEvent(new PermissionRequestedEvent(permission));
+                return Result<Permission>.Success(permission);
+            });
+    }
+
+    private Result<Empty> SetEmployeeForename(string employeeForename)
+    {
         if (string.IsNullOrEmpty(employeeForename))
         {
-            return Result.Failure<Permission>(Error.InvalidEmployeeForename);
+            return Result.Failure(Error.InvalidEmployeeForename);
         }
 
+        EmployeeForename = employeeForename;
+        return Result.Success();
+    }
+
+    private Result<Empty> SetEmployeeSurname(string employeeSurname)
+    {
         if (string.IsNullOrEmpty(employeeSurname))
         {
-            return Result.Failure<Permission>(Error.InvalidEmployeeSurname);
+            return Result.Failure(Error.InvalidEmployeeForename);
         }
 
+        EmployeeForename = employeeSurname;
+        return Result.Success();
+    }
+
+    private Result<Empty> SetPermissionType(PermissionType permissionType)
+    {
         if (permissionType is null)
         {
-            return Result.Failure<Permission>(Error.InvalidPermissionType);
+            return Result.Failure(Error.InvalidEmployeeForename);
         }
 
-        return new Permission(employeeForename, employeeSurname, permissionType);
+        PermissionType = permissionType;
+        return Result.Success();
     }
 }

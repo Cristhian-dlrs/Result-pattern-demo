@@ -1,6 +1,6 @@
 using TechDemo.Domain.Shared.Models;
 
-namespace TechDemo.Infrastructure.Kafka;
+namespace TechDemo.Infrastructure.Producers;
 
 internal interface IKafkaProducer
 {
