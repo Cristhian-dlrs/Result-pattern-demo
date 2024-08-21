@@ -7,7 +7,7 @@ namespace TechDemo.Infrastructure.Kafka;
 
 public static class Extensions
 {
-    public static IServiceCollection AddKafka(
+    public static IServiceCollection AddKafkaWorkers(
         this IServiceCollection services, IConfiguration configuration)
     {
         services
@@ -37,7 +37,7 @@ public static class Extensions
         });
 
         services
-            .AddSingleton<IKafkaProducer, KafkaProducer>()
+            .AddHostedService<KafkaProducer>()
             .AddHostedService<KafkaConsumer>();
 
         return services;

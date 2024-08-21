@@ -21,14 +21,16 @@ public static class Extensions
             .PrettyJson()
             .DefaultIndex(elasticSearchOptions.DefaultIndex);
 
-            var client = new ElasticClient(settings)
-            .Indices
-            .Create(
+            var client = new ElasticClient(settings);
+
+            client.Indices.Create(
                 elasticSearchOptions.DefaultIndex,
                 index => index.Map<PermissionViewModel>(permission => permission.AutoMap()));
 
             return client;
         });
+
+        services.AddSingleton<IPermissionsViewRepository, PermissionsViewRepository>();
 
         return services;
     }

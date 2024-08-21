@@ -10,7 +10,7 @@ public static class Extensions
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddKafka(configuration);
+        services.AddKafkaWorkers(configuration);
         services.AddElasticSearch(configuration);
         services.AddEntityFramework(configuration);
         return services;

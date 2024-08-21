@@ -21,7 +21,7 @@ public static class Extensions
             options.UseSqlServer(sqlOptions.ConnectionString);
         });
 
-        services.AddSingleton<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
