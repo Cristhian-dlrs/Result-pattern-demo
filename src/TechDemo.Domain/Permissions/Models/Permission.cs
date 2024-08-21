@@ -46,7 +46,7 @@ public class Permission : AggregateRoot
     {
         if (string.IsNullOrEmpty(employeeForename))
         {
-            return Result.Failure(Error.InvalidEmployeeForename);
+            return Result.Failure(PermissionErrors.InvalidEmployeeForename);
         }
 
         EmployeeForename = employeeForename;
@@ -57,7 +57,7 @@ public class Permission : AggregateRoot
     {
         if (string.IsNullOrEmpty(employeeSurname))
         {
-            return Result.Failure(Error.InvalidEmployeeForename);
+            return Result.Failure(PermissionErrors.InvalidEmployeeForename);
         }
 
         EmployeeForename = employeeSurname;
@@ -68,7 +68,7 @@ public class Permission : AggregateRoot
     {
         if (permissionType is null)
         {
-            return Result.Failure(Error.InvalidEmployeeForename);
+            return Result.Failure(PermissionErrors.InvalidEmployeeForename);
         }
 
         PermissionType = permissionType;

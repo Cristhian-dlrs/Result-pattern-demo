@@ -45,14 +45,20 @@ public class Result<T>
         : Failure(Error.NullValue);
 }
 
-public struct Empty
-{
-    public static readonly Empty Value = new Empty();
-}
-
 public static class Result
 {
     public static Result<Empty> Success() => new(Empty.Value, true, Error.None);
 
     public static Result<Empty> Failure(Error error) => new(Empty.Value, false, error);
+}
+
+public struct Empty
+{
+    public static readonly Empty Value = new Empty();
+}
+
+public sealed record Error(string Code, string Description)
+{
+    public static readonly Error None = new(string.Empty, string.Empty);
+    public static readonly Error NullValue = new(nameof(Error), "The value cannot be null.");
 }

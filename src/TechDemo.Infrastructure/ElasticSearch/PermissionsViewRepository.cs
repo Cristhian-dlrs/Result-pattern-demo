@@ -28,7 +28,7 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
 
         return result.IsValid
             ? Result<IEnumerable<PermissionViewModel>>.Success(result.Documents)
-            : Result<IEnumerable<PermissionViewModel>>.Failure(Error.QueryError);
+            : Result<IEnumerable<PermissionViewModel>>.Failure(ElasticSearchErrors.QueryError);
     }
 
     public async Task<Result<Empty>> AddAsync(
@@ -40,7 +40,7 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
 
         return response.IsValid
             ? Result.Success()
-            : Result.Failure(Error.AddViewError);
+            : Result.Failure(ElasticSearchErrors.AddViewError);
     }
 
     public async Task<Result<Empty>> UpdateAsync(
@@ -53,6 +53,6 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
 
         return response.IsValid
             ? Result.Success()
-            : Result.Failure(Error.UpdateViewError);
+            : Result.Failure(ElasticSearchErrors.UpdateViewError);
     }
 }

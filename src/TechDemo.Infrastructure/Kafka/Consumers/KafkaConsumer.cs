@@ -1,4 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Hosting;
@@ -62,7 +61,7 @@ internal class KafkaConsumer : BackgroundService
                         break;
 
                     default:
-                        throw new InvalidOperationException("Cannot process this event.");
+                        throw new InvalidOperationException("Unable to process event.");
                 }
             }
         }
