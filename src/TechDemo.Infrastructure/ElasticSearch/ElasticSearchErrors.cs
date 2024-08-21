@@ -2,7 +2,7 @@ using TechDemo.Domain.Shared.Results;
 
 namespace TechDemo.Infrastructure.ElasticSearch;
 
-public sealed record ElasticSearchErrors(string Code, string Description)
+public static class ElasticSearchErrors
 {
     public static readonly Error AddViewError = new(
         "ElasticSearchErrors.AddViewError",

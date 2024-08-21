@@ -2,7 +2,7 @@ using TechDemo.Domain.Shared.Results;
 
 namespace TechDemo.Domain.Permissions;
 
-public sealed record PermissionErrors(string Code, string Description)
+public static class PermissionErrors
 {
     public static readonly Error InvalidEmployeeForename = new(
         "Permissions.InvalidEmployeeForename",
