@@ -1,13 +1,16 @@
+using System.Diagnostics.Tracing;
+using TechDemo.Domain.Shared.Results;
+
 namespace TechDemo.Domain.Permissions.ViewModels;
 
 public interface IPermissionsViewRepository
 {
-    public Task<IEnumerable<PermissionViewModel>?> GetAsync(
+    public Task<Result<IEnumerable<PermissionViewModel>>> GetAsync(
         string term, int resultNumber, CancellationToken cancellationToken);
 
-    public Task<bool> InsertAsync(
+    public Task<Result<Empty>> AddAsync(
         PermissionViewModel permission, CancellationToken cancellationToken);
 
-    public Task<bool> UpdateAsync(
+    public Task<Result<Empty>> UpdateAsync(
         PermissionViewModel permission, CancellationToken cancellationToken);
 }

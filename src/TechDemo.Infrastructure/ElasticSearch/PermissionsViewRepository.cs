@@ -1,5 +1,7 @@
 using Nest;
 using TechDemo.Domain.Permissions.ViewModels;
+using TechDemo.Domain.Shared.Results;
+using Result = TechDemo.Domain.Shared.Results.Result;
 
 namespace TechDemo.Infrastructure.ElasticSearch;
 
@@ -13,7 +15,7 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
             throw new ArgumentNullException(nameof(elasticClient));
     }
 
-    public async Task<IEnumerable<PermissionViewModel>?> GetAsync(
+    public async Task<Result<IEnumerable<PermissionViewModel>>> GetAsync(
         string term, int resultNumber, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -25,26 +27,32 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
         );
 
         return result.IsValid
-            ? [.. result.Documents]
-            : default;
+            ? Result<IEnumerable<PermissionViewModel>>.Success(result.Documents)
+            : Result<IEnumerable<PermissionViewModel>>.Failure(Error.QueryError);
     }
 
-    public async Task<bool> InsertAsync(
+    public async Task<Result<Empty>> AddAsync(
         PermissionViewModel permission, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var response = await _elasticClient.IndexDocumentAsync(permission);
-        return response.IsValid;
+
+        return response.IsValid
+            ? Result.Success()
+            : Result.Failure(Error.AddViewError);
     }
 
-    public async Task<bool> UpdateAsync(
+    public async Task<Result<Empty>> UpdateAsync(
         PermissionViewModel permission, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var response = await _elasticClient.UpdateAsync<PermissionViewModel>(
             permission.Id, descriptor => descriptor.Doc(permission));
-        return response.IsValid;
+
+        return response.IsValid
+            ? Result.Success()
+            : Result.Failure(Error.UpdateViewError);
     }
 }

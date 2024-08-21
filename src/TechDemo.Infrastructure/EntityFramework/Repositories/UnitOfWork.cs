@@ -1,7 +1,10 @@
+using Nest;
 using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Repositories;
+using TechDemo.Domain.Shared.Results;
 using TechDemo.Infrastructure.Producers;
+using Result = TechDemo.Domain.Shared.Results.Result;
 
 namespace TechDemo.Infrastructure.EntityFramework.Repositories;
 
@@ -23,7 +26,7 @@ internal class UnitOfWork : IUnitOfWork
 
     public IPermissionsRepository PermissionsRepository { get; private set; }
 
-    public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -35,7 +38,7 @@ internal class UnitOfWork : IUnitOfWork
             await _producer.PublishMessageAsync(domainEvent, cancellationToken);
         }
 
-        return await _dbContext.SaveChangesAsync(cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     private IEnumerable<IDomainEvent> GetDomainEvents()

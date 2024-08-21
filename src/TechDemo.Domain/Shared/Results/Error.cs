@@ -26,4 +26,17 @@ public sealed record Error(string Code, string Description)
     public static readonly Error InvalidPermissionId = new(
         "Permissions.InvalidPermissionId",
         "The provided id does not belong to any registered permission type.");
+
+    // View repository errors
+    public static readonly Error AddViewError = new(
+        "ViewRepository.AddViewError",
+        "Unable to add the view model.");
+
+    public static readonly Error UpdateViewError = new(
+        "ViewRepository.UpdateViewError",
+        "Unable to update vew model.");
+
+    public static readonly Error QueryError = new(
+        "ViewRepository.QueryError",
+        "Unable to perform the query.");
 }

@@ -34,7 +34,7 @@ public class PermissionType : Enumeration
 
         if (matchedPermissionType is null)
         {
-            return Result.Failure<PermissionType>(Error.InvalidPermissionDescription);
+            return Result<PermissionType>.Failure(Error.InvalidPermissionDescription);
         }
 
         return matchedPermissionType;
@@ -46,7 +46,7 @@ public class PermissionType : Enumeration
 
         if (matchedPermissionType is null)
         {
-            return Result.Failure<PermissionType>(Error.InvalidPermissionId);
+            return Result<PermissionType>.Failure(Error.InvalidPermissionId);
         }
 
         return matchedPermissionType;

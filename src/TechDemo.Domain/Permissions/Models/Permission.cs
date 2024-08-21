@@ -1,4 +1,5 @@
 using TechDemo.Domain.Permissions.Models.Events;
+using TechDemo.Domain.Permissions.ViewModels;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Results;
 
@@ -21,7 +22,7 @@ public class Permission : AggregateRoot
             .Then(() => SetPermissionType(permissionType))
             .Then(() =>
             {
-                AddDomainEvent(new PermissionRequestedEvent(this));
+                AddDomainEvent(new PermissionRequestedEvent(ToViewModel()));
                 return Result.Success();
             });
     }
@@ -35,7 +36,8 @@ public class Permission : AggregateRoot
             .Then(() => permission.SetPermissionType(permissionType))
             .Then(() =>
             {
-                permission.AddDomainEvent(new PermissionRequestedEvent(permission));
+                permission.AddDomainEvent(
+                    new PermissionRequestedEvent(permission.ToViewModel()));
                 return Result<Permission>.Success(permission);
             });
     }
@@ -71,5 +73,15 @@ public class Permission : AggregateRoot
 
         PermissionType = permissionType;
         return Result.Success();
+    }
+
+    internal PermissionViewModel ToViewModel()
+    {
+        return new PermissionViewModel(
+            Id,
+            EmployeeForename,
+            EmployeeSurname,
+            PermissionType.Description,
+            PermissionDate);
     }
 }
