@@ -15,12 +15,19 @@ public class Permission : AggregateRoot
     private Permission() { }
 
     public Result<Empty> ModifyPermission(
-        string employeeForename, string employeeSurname, PermissionType permissionType)
+        string? employeeForename, string? employeeSurname, PermissionType? permissionType)
     {
-        return SetEmployeeForename(employeeForename)
-            .Then(() => SetEmployeeSurname(employeeSurname))
-            .Then(() => SetPermissionType(permissionType))
-            .Then(() =>
+        return Result.Success()
+            .Map(_ => employeeForename is null
+                ? Result.Success()
+                : SetEmployeeForename(employeeForename))
+            .Map(_ => employeeSurname is null
+                ? Result.Success()
+                : SetEmployeeSurname(employeeSurname))
+            .Map(_ => permissionType is null
+                ? Result.Success()
+                : SetPermissionType(permissionType))
+            .Map(_ =>
             {
                 AddDomainEvent(new PermissionRequestedEvent(ToViewModel()));
                 return Result.Success();
@@ -32,9 +39,9 @@ public class Permission : AggregateRoot
     {
         var permission = new Permission();
         return permission.SetEmployeeForename(employeeForename)
-            .Then(() => permission.SetEmployeeSurname(employeeSurname))
-            .Then(() => permission.SetPermissionType(permissionType))
-            .Then(() =>
+            .Map(_ => permission.SetEmployeeSurname(employeeSurname))
+            .Map(_ => permission.SetPermissionType(permissionType))
+            .Map(_ =>
             {
                 permission.AddDomainEvent(
                     new PermissionRequestedEvent(permission.ToViewModel()));

@@ -1,3 +1,8 @@
+using TechDemo.Domain.Permissions.ViewModels;
+
 namespace TechDemo.Application.Permissions.Queries;
 
-internal class GetPermissionsQueryResult { }
+public record GetPermissionsQueryResult(
+    bool isSuccess,
+    List<PermissionViewModel>? Permissions
+);

@@ -27,14 +27,14 @@ public class PermissionType : Enumeration
         Moderator
     ];
 
-    public static Result<PermissionType> FromDescription(string description)
+    public static Result<PermissionType> FromDescription(string? description)
     {
         var matchedPermissionType = PermissionTypes.FirstOrDefault(type =>
             string.Equals(type.Description, description, StringComparison.CurrentCultureIgnoreCase));
 
         if (matchedPermissionType is null)
         {
-            return Result<PermissionType>.Failure(Error.InvalidPermissionDescription);
+            return Result<PermissionType>.Failure(PermissionErrors.InvalidPermissionDescription);
         }
 
         return matchedPermissionType;
@@ -46,7 +46,7 @@ public class PermissionType : Enumeration
 
         if (matchedPermissionType is null)
         {
-            return Result<PermissionType>.Failure(Error.InvalidPermissionId);
+            return Result<PermissionType>.Failure(PermissionErrors.InvalidPermissionId);
         }
 
         return matchedPermissionType;

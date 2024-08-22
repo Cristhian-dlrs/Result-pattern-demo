@@ -1,7 +1,9 @@
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Repositories;
+using TechDemo.Domain.Shared.Results;
 using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework.Repositories;
@@ -20,12 +22,19 @@ internal class UnitOfWork : IUnitOfWork
 
     public IPermissionsRepository PermissionsRepository { get; private set; }
 
-    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    public async Task<Result<Empty>> SaveChangesAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-
-        AddOutboxMessages();
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        try
+        {
+            AddOutboxMessages();
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return Result.Success();
+        }
+        catch (DbUpdateException)
+        {
+            return Result.Failure(EFerrors.SaveError);
+        }
     }
 
     private void AddOutboxMessages()

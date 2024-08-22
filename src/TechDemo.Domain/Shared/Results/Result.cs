@@ -31,14 +31,54 @@ public class Result<T>
 
     public static Result<T> Failure(Error error) => new(default, false, error);
 
-    public Result<T> Then(Func<Result<T>> next) => IsSuccess ? next() : this;
+    // public Result<T> Then(Func<Result<T>> next) => IsSuccess ? next() : this;
+
+    // public Result<TResult> Then<TResult>(Func<Result<TResult>> next) => IsSuccess
+    //     ? next()
+    //     : Result<TResult>.Failure(Error);
+
+    public Result<TResult> Map<TResult>(Func<T, Result<TResult>> func) => IsSuccess
+        ? func(Value)
+        : Result<TResult>.Failure(Error);
+
+    public async Task<Result<TResult>> MapAsync<TResult>(Func<T, Task<Result<TResult>>> func)
+    => IsSuccess
+        ? await func(Value)
+        : Result<TResult>.Failure(Error);
+
+    public async Task<Result<TResult>> MapAsync<TResult>(Func<Task<Result<TResult>>> func)
+    => IsSuccess
+        ? await func()
+        : Result<TResult>.Failure(Error);
+
 
     public TResult Match<TResult>(Func<TResult> onSuccess, Func<Error, TResult> onFailure)
-        => IsSuccess ? onSuccess() : onFailure(Error);
+    => IsSuccess
+        ? onSuccess()
+        : onFailure(Error);
 
-    public Result<TResult> Then<TResult>(Func<Result<TResult>> next) => IsSuccess
-        ? next()
+    public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<Error, TResult> onFailure)
+    => IsSuccess
+        ? onSuccess(Value)
+        : onFailure(Error);
+
+
+    public async Task<TResult> MatchAsync<TResult>(
+        Func<T, Task<TResult>> onSuccess, Func<Error, Task<TResult>> onFailure)
+    => IsSuccess
+            ? await onSuccess(Value)
+            : await onFailure(Error);
+
+
+    public Result<TResult> Project<TResult>(Func<T, TResult> mapper) => IsSuccess
+        ? Result<TResult>.Success(mapper(Value))
         : Result<TResult>.Failure(Error);
+
+    public async Task<Result<TResult>> ProjectAsync<TResult>(Func<T, Task<TResult>> mapper)
+    => IsSuccess
+            ? Result<TResult>.Success(await mapper(Value))
+            : Result<TResult>.Failure(Error);
+
 
     public static implicit operator Result<T>(T? value) => value is not null
         ? Success(value)
@@ -61,4 +101,9 @@ public sealed record Error(string Code, string Description)
 {
     public static readonly Error None = new(string.Empty, string.Empty);
     public static readonly Error NullValue = new(nameof(Error), "The value cannot be null.");
+}
+
+public static class TaskExtensions
+{
+    public static Result<T> Resolve<T>(this Task<Result<T>> task) => task.Result;
 }
