@@ -31,12 +31,6 @@ public class Result<T>
 
     public static Result<T> Failure(Error error) => new(default, false, error);
 
-    // public Result<T> Then(Func<Result<T>> next) => IsSuccess ? next() : this;
-
-    // public Result<TResult> Then<TResult>(Func<Result<TResult>> next) => IsSuccess
-    //     ? next()
-    //     : Result<TResult>.Failure(Error);
-
     public Result<TResult> Map<TResult>(Func<T, Result<TResult>> func) => IsSuccess
         ? func(Value)
         : Result<TResult>.Failure(Error);
@@ -46,22 +40,10 @@ public class Result<T>
         ? await func(Value)
         : Result<TResult>.Failure(Error);
 
-    public async Task<Result<TResult>> MapAsync<TResult>(Func<Task<Result<TResult>>> func)
-    => IsSuccess
-        ? await func()
-        : Result<TResult>.Failure(Error);
-
-
-    public TResult Match<TResult>(Func<TResult> onSuccess, Func<Error, TResult> onFailure)
-    => IsSuccess
-        ? onSuccess()
-        : onFailure(Error);
-
     public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<Error, TResult> onFailure)
     => IsSuccess
         ? onSuccess(Value)
         : onFailure(Error);
-
 
     public async Task<TResult> MatchAsync<TResult>(
         Func<T, Task<TResult>> onSuccess, Func<Error, Task<TResult>> onFailure)
@@ -70,13 +52,13 @@ public class Result<T>
             : await onFailure(Error);
 
 
-    public Result<TResult> Project<TResult>(Func<T, TResult> mapper) => IsSuccess
-        ? Result<TResult>.Success(mapper(Value))
+    public Result<TResult> Project<TResult>(Func<T, TResult> projector) => IsSuccess
+        ? Result<TResult>.Success(projector(Value))
         : Result<TResult>.Failure(Error);
 
-    public async Task<Result<TResult>> ProjectAsync<TResult>(Func<T, Task<TResult>> mapper)
+    public async Task<Result<TResult>> ProjectAsync<TResult>(Func<T, Task<TResult>> projector)
     => IsSuccess
-            ? Result<TResult>.Success(await mapper(Value))
+            ? Result<TResult>.Success(await projector(Value))
             : Result<TResult>.Failure(Error);
 
 
