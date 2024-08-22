@@ -4,7 +4,6 @@ WORKDIR /src
 COPY ["src/TechDemo.Api/TechDemo.Api.csproj", "TechDemo.Api/"]
 COPY ["src/TechDemo.Application/TechDemo.Application.csproj", "TechDemo.Application/"]
 COPY ["src/TechDemo.Domain/TechDemo.Domain.csproj", "TechDemo.Domain/"]
-COPY ["src/TechDemo.Contracts/TechDemo.Contracts.csproj", "TechDemo.Contracts/"]
 COPY ["src/TechDemo.Infrastructure/TechDemo.Infrastructure.csproj", "TechDemo.Infrastructure/"]
 RUN dotnet restore "TechDemo.Api/TechDemo.Api.csproj"
 COPY . ../
