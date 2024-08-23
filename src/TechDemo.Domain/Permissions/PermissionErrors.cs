@@ -23,4 +23,8 @@ public static class PermissionErrors
     public static readonly Error InvalidPermissionId = new(
         "Permissions.InvalidPermissionId",
         "The provided id does not belong to any registered permission type.");
+
+    public static readonly Error NotFound = new(
+        "Permissions.NotFound",
+        "No permission was found.");
 }
