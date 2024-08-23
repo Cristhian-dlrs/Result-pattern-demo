@@ -1,7 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework.Configurations;
 

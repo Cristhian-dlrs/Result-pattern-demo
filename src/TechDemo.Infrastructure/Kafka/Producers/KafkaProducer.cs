@@ -5,7 +5,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TechDemo.Infrastructure.EntityFramework;
-using TechDemo.Infrastructure.EntityFramework.Outbox;
 using TechDemo.Infrastructure.Kafka;
 
 namespace TechDemo.Infrastructure.Producers;

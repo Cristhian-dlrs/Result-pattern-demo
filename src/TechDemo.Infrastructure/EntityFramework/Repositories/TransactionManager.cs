@@ -3,7 +3,6 @@ using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Repositories;
 using TechDemo.Domain.Shared.Results;
-using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework.Repositories;
 

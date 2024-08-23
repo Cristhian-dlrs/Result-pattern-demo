@@ -1,10 +1,8 @@
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
 using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Repositories;
 using TechDemo.Domain.Shared.Results;
-using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework.Repositories;
 
@@ -32,11 +30,11 @@ internal class UnitOfWork : IUnitOfWork
 
     private void AddOutboxMessages()
     {
-        var messages = MapDomainEventToOutboxMessages();
-        _dbContext.AddRange(messages);
+        var deferredEvents = MapDomainEventsToDeferredEvents();
+        _dbContext.AddRange(deferredEvents);
     }
 
-    private IEnumerable<DeferredEvent> MapDomainEventToOutboxMessages()
+    private IEnumerable<DeferredEvent> MapDomainEventsToDeferredEvents()
         => _dbContext.ChangeTracker
             .Entries<AggregateRoot>()
             .Select(entry => entry.Entity)

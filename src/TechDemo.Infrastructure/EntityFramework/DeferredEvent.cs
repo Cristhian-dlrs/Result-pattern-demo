@@ -1,4 +1,4 @@
-namespace TechDemo.Infrastructure.EntityFramework.Outbox;
+namespace TechDemo.Infrastructure.EntityFramework;
 
 internal sealed record DeferredEvent(
     Guid Id,

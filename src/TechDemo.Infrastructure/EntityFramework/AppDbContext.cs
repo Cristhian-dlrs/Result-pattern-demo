@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using TechDemo.Domain.Permissions.Models;
-using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework;
 
