@@ -32,11 +32,11 @@ public class Result<T>
     public static Result<T> Failure(Error error) => new(default, false, error);
 
 
-    public Result<TResult> Map<TResult>(Func<T, Result<TResult>> func) => IsSuccess
+    public Result<TResult> Then<TResult>(Func<T, Result<TResult>> func) => IsSuccess
         ? func(Value)
         : Result<TResult>.Failure(Error);
 
-    public async Task<Result<TResult>> MapAsync<TResult>(Func<T, Task<Result<TResult>>> func)
+    public async Task<Result<TResult>> ThenAsync<TResult>(Func<T, Task<Result<TResult>>> func)
     => IsSuccess
         ? await func(Value)
         : Result<TResult>.Failure(Error);
@@ -53,13 +53,13 @@ public class Result<T>
             : await onFailure(Error);
 
 
-    public Result<TResult> Project<TResult>(Func<T, TResult> projector) => IsSuccess
-        ? Result<TResult>.Success(projector(Value))
+    public Result<TResult> Map<TResult>(Func<T, TResult> mapper) => IsSuccess
+        ? Result<TResult>.Success(mapper(Value))
         : Result<TResult>.Failure(Error);
 
-    public async Task<Result<TResult>> ProjectAsync<TResult>(Func<T, Task<TResult>> projector)
+    public async Task<Result<TResult>> MapAsync<TResult>(Func<T, Task<TResult>> mapper)
     => IsSuccess
-            ? Result<TResult>.Success(await projector(Value))
+            ? Result<TResult>.Success(await mapper(Value))
             : Result<TResult>.Failure(Error);
 
     public Task<Result<T>> Async() => Task.FromResult(this);

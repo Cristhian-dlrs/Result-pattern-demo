@@ -19,7 +19,7 @@ internal class GetPermissionsQueryHandler
     {
         return await _permissionsViewRepository
             .GetAsync(request.SearchTerm ?? string.Empty, cancellationToken).Unwrap()
-            .MapAsync(permissions =>
+            .ThenAsync(permissions =>
                     Result<GetPermissionsQueryResult>.Success(
                          new GetPermissionsQueryResult(permissions)).Async());
     }

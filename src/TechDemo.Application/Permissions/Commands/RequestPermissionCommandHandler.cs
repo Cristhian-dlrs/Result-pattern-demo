@@ -23,9 +23,9 @@ internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermiss
                         request.EmployeeForename,
                         request.EmployeeSurname,
                         request.PermissionType)
-                    .MapAsync(permission =>
+                    .ThenAsync(permission =>
                         _unitOfWork.PermissionsRepository.CreateAsync(permission, cancellationToken)).Unwrap()
-                    .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)),
+                    .ThenAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)),
 
                 onFailure: permissionType => Result.Failure(permissionType).Async());
     }

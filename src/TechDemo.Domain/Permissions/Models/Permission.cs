@@ -18,16 +18,16 @@ public class Permission : AggregateRoot
         string? employeeForename, string? employeeSurname, string? permissionType)
     {
         return Result.Success()
-            .Map(_ => employeeForename is null
+            .Then(_ => employeeForename is null
                 ? Result.Success()
                 : SetEmployeeForename(employeeForename))
-            .Map(_ => employeeSurname is null
+            .Then(_ => employeeSurname is null
                 ? Result.Success()
                 : SetEmployeeSurname(employeeSurname))
-            .Map(_ => permissionType is null
+            .Then(_ => permissionType is null
                 ? Result.Success()
                 : SetPermissionType(permissionType))
-            .Map(_ =>
+            .Then(_ =>
             {
                 AddDomainEvent(new PermissionRequestedEvent(ToViewModel()));
                 return Result.Success();
@@ -39,9 +39,9 @@ public class Permission : AggregateRoot
     {
         var permission = new Permission();
         return permission.SetEmployeeForename(employeeForename)
-            .Map(_ => permission.SetEmployeeSurname(employeeSurname))
-            .Map(_ => permission.SetPermissionType(permissionType))
-            .Map(_ =>
+            .Then(_ => permission.SetEmployeeSurname(employeeSurname))
+            .Then(_ => permission.SetPermissionType(permissionType))
+            .Then(_ =>
             {
                 permission.AddDomainEvent(
                     new PermissionRequestedEvent(permission.ToViewModel()));
@@ -74,7 +74,7 @@ public class Permission : AggregateRoot
     private Result<None> SetPermissionType(string permissionType)
     {
         return PermissionType.FromDescription(permissionType)
-            .Map(permissionType =>
+            .Then(permissionType =>
             {
                 PermissionType = permissionType;
                 return Result.Success();

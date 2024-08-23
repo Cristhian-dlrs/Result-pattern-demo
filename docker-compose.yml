@@ -1,47 +1,45 @@
 version: "3.8"
 
 services:
-  techdemo-api:
-    container_name: techdemo-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "5001:5001"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    restart: on-failure
-    networks:
-      - app-network
-    depends_on:
-      - kafka
-      - sqlserver
-      - elasticsearch
+  # techdemo-api:
+  #   container_name: techdemo-api
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5001:5001"
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=Development
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - kafka
+  #     - sqlserver
+  #     - elasticsearch
 
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: mcr.microsoft.com/azure-sql-edge
     container_name: sqlserver
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "devP@ss123"
     ports:
-      - "1433:1433"
+      - 1433:1433
+    volumes:
+      - sql-server-data:/var/opt/mssql
     networks:
       - app-network
-    restart: always
-    volumes:
-      - sql-server-data:/var/opt/mssql/
 
   elasticsearch:
     container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
     ports:
       - 9200:9200
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
     volumes:
       - elasticsearch-data:/usr/share/elasticseaach/data
-    environment:
-      - xpack.security.enabled=false
-      - discovery.type=sigle-node
     networks:
       - app-network
 
@@ -65,6 +63,8 @@ services:
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
+    volumes:
+      - zookeeper_data:/data
     networks:
       - app-network
 
@@ -72,29 +72,24 @@ services:
     image: confluentinc/cp-kafka
     container_name: kafka
     ports:
-      - 9092:9092ss
+      - 9092:9092
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_BROKER_ID=1
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+    volumes:
+      - kafka-data:/kafka
+    depends_on:
+      - zookeeper
     networks:
       - app-network
 
 volumes:
   sql-server-data:
-    driver: local
-    driver_opts:
-      type: none
-      device: .data/volumes/sql-server-data
-      o: bind
-
   elasticsearch-data:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./data/volumes/elasticsearch-data
-      o: bind
+  kafka-data:
+  zookeeper_data:
 
 networks:
   app-network:

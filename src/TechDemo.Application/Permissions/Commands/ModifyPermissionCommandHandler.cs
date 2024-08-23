@@ -16,14 +16,14 @@ internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissio
     public async Task<Result<None>> Handle(ModifyPermissionsCommand request, CancellationToken cancellationToken)
     {
         return await _unitOfWork.PermissionsRepository.GetByIdAsync(request.Id, cancellationToken).Unwrap()
-            .MapAsync(permission =>
+            .ThenAsync(permission =>
                     permission.ModifyPermission(
                         request.EmployeeForename,
                         request.EmployeeSurname,
                         request.PermissionType)
-                    .Project(_ => permission)
-                    .MapAsync(permission =>
+                    .Map(_ => permission)
+                    .ThenAsync(permission =>
                         _unitOfWork.PermissionsRepository.UpdateAsync(permission, cancellationToken)).Unwrap()
-                    .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)));
+                    .ThenAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)));
     }
 }

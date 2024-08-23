@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nest;
 using TechDemo.Domain.Permissions.ViewModels;
@@ -8,11 +7,13 @@ namespace TechDemo.Infrastructure.ElasticSearch;
 public static class Extensions
 {
     public static IServiceCollection AddElasticSearch(
-        this IServiceCollection services, IConfiguration configuration)
+        this IServiceCollection services)
     {
         services
             .AddOptions<ElasticSearchOptions>()
-            .Bind(configuration.GetSection(nameof(ElasticSearchOptions)));
+            .BindConfiguration(nameof(ElasticSearchOptions))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         services.AddSingleton(provider =>
         {
@@ -30,6 +31,7 @@ public static class Extensions
             return client;
         });
 
+        services.AddSingleton<IElasticClient, ElasticClient>();
         services.AddSingleton<IPermissionsViewRepository, PermissionsViewRepository>();
 
         return services;

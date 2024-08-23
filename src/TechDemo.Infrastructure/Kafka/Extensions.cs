@@ -8,11 +8,13 @@ namespace TechDemo.Infrastructure.Kafka;
 public static class Extensions
 {
     public static IServiceCollection AddKafkaWorkers(
-        this IServiceCollection services, IConfiguration configuration)
+        this IServiceCollection services)
     {
         services
             .AddOptions<KafkaOptions>()
-            .Bind(configuration.GetSection(nameof(KafkaOptions)));
+            .BindConfiguration(nameof(KafkaOptions))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
         services.AddSingleton(provider =>
         {
