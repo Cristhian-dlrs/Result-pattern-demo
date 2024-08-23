@@ -72,7 +72,7 @@ services:
     image: confluentinc/cp-kafka
     container_name: kafka
     ports:
-      - 9092:9092
+      - 9092:9092ss
     environment:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_BROKER_ID=1

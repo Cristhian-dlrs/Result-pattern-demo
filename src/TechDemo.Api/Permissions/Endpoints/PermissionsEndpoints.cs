@@ -13,9 +13,14 @@ public static class PermissionsEndpoints
     {
         app.MapGet(
             "/permissions",
-            async (ISender _sender, [FromQuery] string searchTerm) =>
+            async (
+                CancellationToken cancellationToken,
+                ISender _sender,
+                [FromQuery] string searchTerm) =>
         {
-            return await _sender.Send(new GetPermissionsQuery(searchTerm))
+            return await _sender.Send(
+                    new GetPermissionsQuery(searchTerm),
+                    cancellationToken)
                 .Unwrap()
                 .MatchAsync(
                     onSuccess: result => Task.FromResult(Results.Ok(result)),
@@ -24,12 +29,15 @@ public static class PermissionsEndpoints
 
         app.MapPost(
             "/permissions",
-            async (ISender _sender, [FromBody] CreatePermissionRequest request) =>
+            async (
+                CancellationToken cancellationToken,
+                ISender _sender,
+                [FromBody] CreatePermissionRequest request) =>
         {
             return await _sender.Send(new RequestPermissionsCommand(
                     request.EmployeeForename,
                     request.EmployeeSurname,
-                    request.PermissionType))
+                    request.PermissionType), cancellationToken)
                 .Unwrap()
                 .MatchAsync(
                     onSuccess: result => Task.FromResult(Results.NoContent()),
@@ -38,13 +46,16 @@ public static class PermissionsEndpoints
 
         app.MapPatch(
             "/permissions/{permissionId:int}",
-            async (ISender _sender, int permissionId, [FromBody] ModifyPermissionRequest request) =>
+            async (
+                CancellationToken cancellationToken,
+                ISender _sender, int permissionId,
+                [FromBody] ModifyPermissionRequest request) =>
         {
             return await _sender.Send(new ModifyPermissionsCommand(
                     permissionId,
                     request.EmployeeForename,
                     request.EmployeeSurname,
-                    request.PermissionType))
+                    request.PermissionType), cancellationToken)
                 .Unwrap()
                 .MatchAsync(
                     onSuccess: result => Task.FromResult(Results.NoContent()),
