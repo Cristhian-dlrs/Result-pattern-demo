@@ -13,7 +13,7 @@ public class GlobalExceptionHandler
         _logger = logger ?? throw new ArgumentException(nameof(logger));
     }
 
-    public async Task InvokeAsync(HttpContext httpContext)
+    public async Task InvokeAsync(HttpContext httpContext, CancellationToken cancellationToken)
     {
         try
         {
@@ -30,16 +30,17 @@ public class GlobalExceptionHandler
             };
 
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await httpContext.Response.WriteAsJsonAsync(details);
+            await httpContext.Response.WriteAsJsonAsync(details, cancellationToken);
         }
     }
 }
 
-public static class MiddlewareExtensions
+public static class ExceptionHandlerMiddlewareExtensions
 {
     public static IApplicationBuilder UseGlobalExceptionHandler(this IApplicationBuilder app)
     {
         app.UseMiddleware<GlobalExceptionHandler>();
         return app;
     }
+
 }

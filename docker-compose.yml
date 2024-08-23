@@ -1,18 +1,22 @@
 version: "3.8"
 
 services:
-  # techdemo-api:
-  #   container_name: techdemo-api
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "5001:5001"
-  #   environment:
-  #     - ASPNETCORE_ENVIRONMENT=Development
-  #   restart: on-failure
-  #   networks:
-  #     - app-network
+  techdemo-api:
+    container_name: techdemo-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    restart: on-failure
+    networks:
+      - app-network
+    depends_on:
+      - kafka
+      - sqlserver
+      - elasticsearch
 
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -28,30 +32,31 @@ services:
     volumes:
       - sql-server-data:/var/opt/mssql/
 
-  # elasticsearch:
-  #   container_name: elasticsearch
-  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
-  #   ports:
-  #     - 9200:9200
-  #   volumes:
-  #     - elasticsearch-data:/usr/share/elasticseaach/data
-  #   environment:
-  #     - xpack.security.enabled=false
-  #     - discovery.type=sigle-node
-  #   networks:
-  #     - app-network
-  #
-  # kibana:
-  #   container_name: kibana
-  #   image: docker.elastic.co/kibana/kibana:8.7.1
-  #   ports:
-  #     - 5601:5601
-  #   environment:
-  #     - ELASTICSEACH_URL=http://localhost:9200
-  #   networks:
-  #     - app-network
-  #   depends_on:
-  #     - elasticsearch
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.1
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticseaach/data
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=sigle-node
+    networks:
+      - app-network
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEACH_URL=http://localhost:9200
+    networks:
+      - app-network
+    depends_on:
+      - elasticsearch
+
   zookeeper:
     image: confluentinc/cp-zookeeper
     container_name: zookeeper
@@ -77,8 +82,19 @@ services:
       - app-network
 
 volumes:
-  elasticseach-data:
   sql-server-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: .data/volumes/sql-server-data
+      o: bind
+
+  elasticsearch-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data/volumes/elasticsearch-data
+      o: bind
 
 networks:
   app-network:
