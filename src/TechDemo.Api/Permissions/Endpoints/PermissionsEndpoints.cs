@@ -57,7 +57,7 @@ public static class PermissionsEndpoints
                     request.EmployeeSurname,
                     request.PermissionType), cancellationToken)
                 .Unwrap()
-                .MatchAsync(
+                .Match(
                     onSuccess: result => Task.FromResult(Results.NoContent()),
                     onFailure: error => Task.FromResult(Results.Problem(detail: error.Description)));
         });
