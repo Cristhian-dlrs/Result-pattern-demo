@@ -5,7 +5,7 @@ namespace TechDemo.Domain.Permissions.Models;
 
 public class PermissionType : Enumeration
 {
-    public PermissionType(int id, string description) : base(id, description)
+    private PermissionType(int id, string description) : base(id, description)
     {
     }
 

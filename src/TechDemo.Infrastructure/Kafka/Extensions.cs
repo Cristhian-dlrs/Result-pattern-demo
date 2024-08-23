@@ -1,6 +1,6 @@
 using Confluent.Kafka;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using TechDemo.Infrastructure.Producers;
 
 namespace TechDemo.Infrastructure.Kafka;
@@ -18,10 +18,12 @@ public static class Extensions
 
         services.AddSingleton(provider =>
         {
-            var options = provider.GetRequiredService<KafkaOptions>();
+            var options = provider.GetRequiredService<IOptions<KafkaOptions>>().Value;
             var kafkaConfig = new ProducerConfig
             {
                 BootstrapServers = options.BootstrapServers,
+                AllowAutoCreateTopics = options.AllowAutoCreateTopics,
+                Acks = Acks.All,
             };
 
             return new ProducerBuilder<Null, string>(kafkaConfig).Build();
@@ -29,13 +31,16 @@ public static class Extensions
 
         services.AddSingleton(provider =>
         {
-            var options = provider.GetRequiredService<KafkaOptions>();
-            var kafkaConfig = new ProducerConfig
+            var options = provider.GetRequiredService<IOptions<KafkaOptions>>().Value;
+            var kafkaConfig = new ConsumerConfig
             {
                 BootstrapServers = options.BootstrapServers,
+                GroupId = options.DefaultGroupId,
+                AllowAutoCreateTopics = options.AllowAutoCreateTopics,
+                AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            return new ConsumerBuilder<Null, string>(kafkaConfig).Build();
+            return new ConsumerBuilder<Ignore, string>(kafkaConfig).Build();
         });
 
         services

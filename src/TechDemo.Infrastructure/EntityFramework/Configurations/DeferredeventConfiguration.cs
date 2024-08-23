@@ -5,10 +5,10 @@ using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework.Configurations;
 
-internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
+internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<DeferredEvent>
 {
-    public void Configure(EntityTypeBuilder<OutboxMessage> builder)
+    public void Configure(EntityTypeBuilder<DeferredEvent> builder)
     {
-        builder.ToTable("OutboxMessages");
+        builder.ToTable("DeferredMessages");
     }
 }

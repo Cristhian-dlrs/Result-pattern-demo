@@ -12,8 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
+    await app.Services.InitializeSqlDbAsync<Program>();
     app.UseHttpsRedirection();
     app.UseGlobalExceptionHandler();
 }
 
-app.Run();
+await app.RunAsync();
+
+
+// dotnet ef migrations add AddDeferredMessages --project ./src/TechDemo.infrastructure/ --startup-project ./src/TechDemo.api/ --output-dir EntityFramework/migrations

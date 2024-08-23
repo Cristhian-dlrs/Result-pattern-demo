@@ -36,7 +36,7 @@ internal class UnitOfWork : IUnitOfWork
         _dbContext.AddRange(messages);
     }
 
-    private IEnumerable<OutboxMessage> MapDomainEventToOutboxMessages()
+    private IEnumerable<DeferredEvent> MapDomainEventToOutboxMessages()
         => _dbContext.ChangeTracker
             .Entries<AggregateRoot>()
             .Select(entry => entry.Entity)
@@ -51,7 +51,7 @@ internal class UnitOfWork : IUnitOfWork
                 return domainEvents;
             })
             .Select(domainEvent =>
-                new OutboxMessage(
+                new DeferredEvent(
                     Guid.NewGuid(),
                     domainEvent.Operation,
                     JsonSerializer.Serialize(domainEvent),

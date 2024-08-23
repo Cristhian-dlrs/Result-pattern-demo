@@ -1,6 +1,6 @@
 namespace TechDemo.Infrastructure.EntityFramework.Outbox;
 
-internal sealed record OutboxMessage(
+internal sealed record DeferredEvent(
     Guid Id,
     string Operation,
     string Payload,

@@ -15,7 +15,7 @@ public class AppDbContext : DbContext
 
     public DbSet<PermissionType> PermissionTypes { get; set; }
 
-    internal DbSet<OutboxMessage> OutboxMessages { get; set; }
+    internal DbSet<DeferredEvent> DeferredEvents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

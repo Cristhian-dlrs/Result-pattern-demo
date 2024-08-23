@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Nest;
 using TechDemo.Domain.Permissions.ViewModels;
 
@@ -17,7 +18,9 @@ public static class Extensions
 
         services.AddSingleton(provider =>
         {
-            var elasticSearchOptions = provider.GetRequiredService<ElasticSearchOptions>();
+            var elasticSearchOptions = provider
+                .GetRequiredService<IOptions<ElasticSearchOptions>>().Value;
+
             var settings = new ConnectionSettings(new Uri(elasticSearchOptions.Url))
             .PrettyJson()
             .DefaultIndex(elasticSearchOptions.DefaultIndex);

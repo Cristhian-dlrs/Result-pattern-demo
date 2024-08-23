@@ -11,13 +11,13 @@ namespace TechDemo.Infrastructure.Kafka;
 
 internal class KafkaConsumer : BackgroundService
 {
-    private readonly IConsumer<Null, string> _consumer;
+    private readonly IConsumer<Ignore, string> _consumer;
     private readonly KafkaOptions _options;
     ILogger<KafkaConsumer> _logger;
     private readonly IPermissionsViewRepository _permissionsViewRepository;
 
     public KafkaConsumer(
-        IConsumer<Null, string> consumer,
+        IConsumer<Ignore, string> consumer,
         IOptions<KafkaOptions> options,
         IPermissionsViewRepository permissionsViewRepository,
         ILogger<KafkaConsumer> logger)
@@ -29,18 +29,12 @@ internal class KafkaConsumer : BackgroundService
             ?? throw new ArgumentNullException(nameof(permissionsViewRepository));
     }
 
-    protected override Task ExecuteAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Starting event consumer...");
-        return Task.Run(() => Consume(cancellationToken), cancellationToken);
-    }
-
-    private void Consume(CancellationToken cancellationToken)
-    {
-        _consumer.Subscribe(_options.DefaultTopic);
-
         try
         {
+            _consumer.Subscribe(_options.DefaultTopic);
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 var result = _consumer.Consume(cancellationToken);
@@ -51,23 +45,25 @@ internal class KafkaConsumer : BackgroundService
                     case nameof(Operations.Request):
                         var requestEvent = domainEvent as PermissionRequestedEvent;
                         var requestedPermission = requestEvent?.Permission;
-                        _permissionsViewRepository.AddAsync(requestedPermission!, cancellationToken);
+                        await _permissionsViewRepository.AddAsync(requestedPermission!, cancellationToken);
                         break;
 
                     case nameof(Operations.Modify):
                         var modifyEvent = domainEvent as PermissionModifiedEvent;
                         var modifiedPermission = modifyEvent?.Permission;
-                        _permissionsViewRepository.UpdateAsync(modifiedPermission!, cancellationToken);
+                        await _permissionsViewRepository.UpdateAsync(modifiedPermission!, cancellationToken);
                         break;
 
                     default:
                         throw new InvalidOperationException("Unable to process event.");
                 }
+
+                _logger.LogInformation($"Event processed: {result.Message.Value}");
             }
         }
         catch (ConsumeException ex)
         {
-            _logger.LogError(ex, "Error producing message.");
+            _logger.LogError(ex, "Error during message consumption.");
         }
         catch (Exception ex)
         {

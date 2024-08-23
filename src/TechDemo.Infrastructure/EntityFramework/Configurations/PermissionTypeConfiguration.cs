@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using TechDemo.Domain.Permissions.Models;
@@ -12,6 +11,8 @@ internal class PermissionTypeConfiguration : IEntityTypeConfiguration<Permission
         builder.ToTable("PermissionTypes");
         builder.HasKey(permissionType => permissionType.Id);
         builder.Property(permissionType => permissionType.Id).ValueGeneratedOnAdd();
-        builder.Property(permissionType => permissionType.Description).HasMaxLength(50);
+        builder.Property(permissionType => permissionType.Description).HasMaxLength(20);
+
+        builder.HasData([.. PermissionType.PermissionTypes.ToArray()]);
     }
 }
