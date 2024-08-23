@@ -3,7 +3,6 @@ using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Repositories;
 using TechDemo.Domain.Shared.Results;
 
-
 namespace TechDemo.Application.Permissions.Commands;
 
 internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermissionsCommand, Result<Empty>>
@@ -25,7 +24,7 @@ internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermiss
                         request.EmployeeSurname,
                         permissionType)
                     .MapAsync(permission =>
-                        _unitOfWork.PermissionsRepository.CreateAsync(permission, cancellationToken)).Resolve()
+                        _unitOfWork.PermissionsRepository.CreateAsync(permission, cancellationToken)).Unwrap()
                     .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)),
 
                 onFailure: permissionType => Task.FromResult(Result.Failure(permissionType))

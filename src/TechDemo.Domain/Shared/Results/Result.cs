@@ -23,13 +23,14 @@ public class Result<T>
 
     public T Value => IsSuccess
         ? _value!
-        : throw new InvalidOperationException("There is no value to access.");
+        : throw new InvalidOperationException("No value to was founds.");
 
     public Error Error { get; }
 
     public static Result<T> Success(T value) => new(value, true, Error.None);
 
     public static Result<T> Failure(Error error) => new(default, false, error);
+
 
     public Result<TResult> Map<TResult>(Func<T, Result<TResult>> func) => IsSuccess
         ? func(Value)
@@ -61,6 +62,7 @@ public class Result<T>
             ? Result<TResult>.Success(await projector(Value))
             : Result<TResult>.Failure(Error);
 
+    public Task<Result<T>> Async() => Task.FromResult(this);
 
     public static implicit operator Result<T>(T? value) => value is not null
         ? Success(value)
@@ -87,5 +89,5 @@ public sealed record Error(string Code, string Description)
 
 public static class TaskExtensions
 {
-    public static Result<T> Resolve<T>(this Task<Result<T>> task) => task.Result;
+    public static Result<T> Unwrap<T>(this Task<Result<T>> task) => task.Result;
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using Nest;
 using TechDemo.Domain.Permissions.ViewModels;
 using TechDemo.Domain.Shared.Results;
@@ -8,22 +9,25 @@ namespace TechDemo.Infrastructure.ElasticSearch;
 internal class PermissionsViewRepository : IPermissionsViewRepository
 {
     private readonly IElasticClient _elasticClient;
+    private readonly ElasticSearchOptions _options;
 
-    public PermissionsViewRepository(IElasticClient elasticClient)
+    public PermissionsViewRepository(
+        IElasticClient elasticClient, IOptions<ElasticSearchOptions> options)
     {
         _elasticClient = elasticClient ??
             throw new ArgumentNullException(nameof(elasticClient));
+        _options = options.Value ?? throw new ArgumentNullException(nameof(options));
     }
 
     public async Task<Result<IEnumerable<PermissionViewModel>>> GetAsync(
-        string term, int resultNumber, CancellationToken cancellationToken)
+        string term, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
         var result = await _elasticClient.SearchAsync<PermissionViewModel>(
             search => search.Query(query => query.QueryString(
                 queryString => queryString.Query($"*{term}*")))
-                .Size(resultNumber)
+                .Size(_options.DefaultResultNumber)
         );
 
         return result.IsValid

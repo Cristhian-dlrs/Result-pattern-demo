@@ -27,7 +27,7 @@ internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissio
                     permissionTypeResult.IsSuccess ? permissionTypeResult.Value : default)
                 .Project(_ => permission)
                 .MapAsync(permission =>
-                    _unitOfWork.PermissionsRepository.UpdateAsync(permission, cancellationToken)).Resolve()
-                .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)).Resolve());
+                    _unitOfWork.PermissionsRepository.UpdateAsync(permission, cancellationToken)).Unwrap()
+                .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)).Unwrap());
     }
 }
