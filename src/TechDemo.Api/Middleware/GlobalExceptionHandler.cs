@@ -13,7 +13,7 @@ public class GlobalExceptionHandler
         _logger = logger ?? throw new ArgumentException(nameof(logger));
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, CancellationToken cancellationToken)
+    public async Task InvokeAsync(HttpContext httpContext)
     {
         try
         {
@@ -25,12 +25,12 @@ public class GlobalExceptionHandler
 
             var details = new ProblemDetails
             {
-                Title = "An unexpected error has occurred while processing your request.",
                 Status = StatusCodes.Status500InternalServerError,
+                Title = "An unexpected error has occurred while processing your request.",
             };
 
             httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await httpContext.Response.WriteAsJsonAsync(details, cancellationToken);
+            await httpContext.Response.WriteAsJsonAsync(details);
         }
     }
 }
@@ -42,5 +42,4 @@ public static class ExceptionHandlerMiddlewareExtensions
         app.UseMiddleware<GlobalExceptionHandler>();
         return app;
     }
-
 }
