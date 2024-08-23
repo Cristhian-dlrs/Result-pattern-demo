@@ -1,3 +1,4 @@
+using TechDemo.Api.Middleware;
 using TechDemo.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.UseHttpsRedirection();
+    app.UseGlobalExceptionHandler();
 }
 
 app.Run();
