@@ -15,7 +15,7 @@ public class Permission : AggregateRoot
     private Permission() { }
 
     public Result<Empty> ModifyPermission(
-        string? employeeForename, string? employeeSurname, PermissionType? permissionType)
+        string? employeeForename, string? employeeSurname, string? permissionType)
     {
         return Result.Success()
             .Map(_ => employeeForename is null
@@ -35,7 +35,7 @@ public class Permission : AggregateRoot
     }
 
     public static Result<Permission> Create(
-        string employeeForename, string employeeSurname, PermissionType permissionType)
+        string employeeForename, string employeeSurname, string permissionType)
     {
         var permission = new Permission();
         return permission.SetEmployeeForename(employeeForename)
@@ -71,15 +71,14 @@ public class Permission : AggregateRoot
         return Result.Success();
     }
 
-    private Result<Empty> SetPermissionType(PermissionType permissionType)
+    private Result<Empty> SetPermissionType(string permissionType)
     {
-        if (permissionType is null)
-        {
-            return Result.Failure(PermissionErrors.InvalidEmployeeForename);
-        }
-
-        PermissionType = permissionType;
-        return Result.Success();
+        return PermissionType.FromDescription(permissionType)
+            .Map(permissionType =>
+            {
+                PermissionType = permissionType;
+                return Result.Success();
+            });
     }
 
     internal PermissionViewModel ToViewModel()

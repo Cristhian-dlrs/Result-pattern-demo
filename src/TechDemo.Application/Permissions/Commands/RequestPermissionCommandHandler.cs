@@ -22,12 +22,11 @@ internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermiss
                    await Permission.Create(
                         request.EmployeeForename,
                         request.EmployeeSurname,
-                        permissionType)
+                        request.PermissionType)
                     .MapAsync(permission =>
                         _unitOfWork.PermissionsRepository.CreateAsync(permission, cancellationToken)).Unwrap()
                     .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)),
 
-                onFailure: permissionType => Task.FromResult(Result.Failure(permissionType))
-            );
+                onFailure: permissionType => Result.Failure(permissionType).Async());
     }
 }

@@ -6,9 +6,9 @@ namespace TechDemo.Application.Permissions.Commands;
 
 public record ModifyPermissionsCommand(
     int Id,
-    string? EmployeeForename,
-    string? EmployeeSurname,
-    string? PermissionType) : IRequest<Result<Empty>>;
+    string EmployeeForename,
+    string EmployeeSurname,
+    string PermissionType) : IRequest<Result<Empty>>;
 
 public class ModifyPermissionsCommandValidator : AbstractValidator<ModifyPermissionsCommand>
 {

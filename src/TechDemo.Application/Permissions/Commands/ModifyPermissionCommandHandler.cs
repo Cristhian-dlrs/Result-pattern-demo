@@ -1,5 +1,4 @@
 using MediatR;
-using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Repositories;
 using TechDemo.Domain.Shared.Results;
 
@@ -16,18 +15,16 @@ internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissio
 
     public async Task<Result<Empty>> Handle(ModifyPermissionsCommand request, CancellationToken cancellationToken)
     {
-        var permissionResult = await _unitOfWork.PermissionsRepository.GetByIdAsync(request.Id, cancellationToken);
-        var permissionTypeResult = PermissionType.FromDescription(request.PermissionType);
-
-        return permissionResult
+        return await _unitOfWork.PermissionsRepository.GetByIdAsync(request.Id, cancellationToken).Unwrap()
             .Map(permission =>
-                permission.ModifyPermission(
-                    request.EmployeeForename,
-                    request.EmployeeSurname,
-                    permissionTypeResult.IsSuccess ? permissionTypeResult.Value : default)
-                .Project(_ => permission)
-                .MapAsync(permission =>
-                    _unitOfWork.PermissionsRepository.UpdateAsync(permission, cancellationToken)).Unwrap()
-                .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)).Unwrap());
+                    permission.ModifyPermission(
+                        request.EmployeeForename,
+                        request.EmployeeSurname,
+                        request.PermissionType)
+                    .Project(_ => permission)
+                    .MapAsync(permission =>
+                        _unitOfWork.PermissionsRepository.UpdateAsync(permission, cancellationToken)).Unwrap()
+                    .MapAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)).Unwrap())
+            .Async();
     }
 }
