@@ -1,5 +1,4 @@
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
 using TechDemo.Domain.Permissions.Models;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Repositories;
@@ -8,11 +7,11 @@ using TechDemo.Infrastructure.EntityFramework.Outbox;
 
 namespace TechDemo.Infrastructure.EntityFramework.Repositories;
 
-internal class UnitOfWork : IUnitOfWork
+internal class TransactionManager : ITransactionManager
 {
     private readonly AppDbContext _dbContext;
 
-    public UnitOfWork(AppDbContext dbContext)
+    public TransactionManager(AppDbContext dbContext)
     {
         _dbContext = dbContext
             ?? throw new ArgumentNullException(nameof(dbContext));
