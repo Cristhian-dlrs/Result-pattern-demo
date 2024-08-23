@@ -14,7 +14,7 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "OutboxMessages",
+                name: "DeferredMessages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -25,7 +25,7 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OutboxMessages", x => x.Id);
+                    table.PrimaryKey("PK_DeferredMessages", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -45,7 +45,8 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                 name: "Permissions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeForename = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     EmployeeSurname = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PermissionType = table.Column<int>(type: "int", nullable: false),
@@ -78,7 +79,7 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OutboxMessages");
+                name: "DeferredMessages");
 
             migrationBuilder.DropTable(
                 name: "Permissions");

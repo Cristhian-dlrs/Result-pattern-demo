@@ -22,8 +22,7 @@ internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissio
                         request.EmployeeSurname,
                         request.PermissionType)
                     .Map(_ => permission)
-                    .ThenAsync(permission =>
-                        _unitOfWork.PermissionsRepository.UpdateAsync(permission, cancellationToken)).Unwrap()
+                    .Then(permission => _unitOfWork.PermissionsRepository.Update(permission))
                     .ThenAsync(_ => _unitOfWork.SaveChangesAsync(cancellationToken)));
     }
 }

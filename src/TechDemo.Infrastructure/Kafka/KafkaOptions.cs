@@ -17,5 +17,11 @@ public class KafkaOptions
     public bool AllowAutoCreateTopics { get; set; }
 
     [Required]
+    public int PartitionsNumber { get; set; }
+
+    [Required]
+    public short ReplicationFactor { get; set; }
+
+    [Required]
     public int BatchSize { get; set; }
 }

@@ -14,17 +14,17 @@ public static class PermissionErrors
 
     public static readonly Error InvalidPermissionType = new(
         "Permissions.InvalidPermissionType",
-        "The permission type is required and cannot be null.");
+        "The permission type does not exist.");
 
     public static readonly Error InvalidPermissionDescription = new(
         "Permissions.InvalidPermissionType",
-        "The provided description does not belong to any registered permission type.");
+        "The permission type does not exist.");
 
     public static readonly Error InvalidPermissionId = new(
         "Permissions.InvalidPermissionId",
-        "The provided id does not belong to any registered permission type.");
+        "The provided permission id does not belong to any registered permission type.");
 
     public static readonly Error NotFound = new(
         "Permissions.NotFound",
-        "No permission was found.");
+        "No permission was found for the specified ID.");
 }

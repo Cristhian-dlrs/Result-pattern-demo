@@ -12,8 +12,8 @@ using TechDemo.Infrastructure.EntityFramework;
 namespace TechDemo.Infrastructure.EntityFramework.migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240823194344_AddDeferredEvents")]
-    partial class AddDeferredEvents
+    [Migration("20240823231402_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -30,6 +30,8 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("EmployeeForename")
                         .IsRequired()
@@ -97,7 +99,7 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                         });
                 });
 
-            modelBuilder.Entity("TechDemo.Infrastructure.EntityFramework.Outbox.DeferredEvent", b =>
+            modelBuilder.Entity("TechDemo.Infrastructure.EntityFramework.DeferredEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

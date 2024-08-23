@@ -23,7 +23,7 @@ public static class PermissionsEndpoints
                     cancellationToken)
                 .Unwrap()
                 .MatchAsync(
-                    onSuccess: result => Task.FromResult(Results.Created()),
+                    onSuccess: result => Task.FromResult(Results.Ok(result)),
                     onFailure: error => Task.FromResult(Results.Problem(detail: error.Description)));
         })
         .WithName("GetPermissions");
@@ -42,7 +42,7 @@ public static class PermissionsEndpoints
                 .Unwrap()
                 .MatchAsync(
                     onSuccess: result => Task.FromResult(Results.NoContent()),
-                    onFailure: error => Task.FromResult(Results.Problem(detail: error.Description)));
+                    onFailure: error => Task.FromResult(Results.BadRequest(error)));
         })
         .WithName("CreatePermissions");
 
@@ -61,7 +61,7 @@ public static class PermissionsEndpoints
                 .Unwrap()
                 .Match(
                     onSuccess: result => Task.FromResult(Results.NoContent()),
-                    onFailure: error => Task.FromResult(Results.Problem(detail: error.Description)));
+                    onFailure: error => Task.FromResult(Results.BadRequest(error)));
         }).
         WithName("ModifyPermissions");
     }

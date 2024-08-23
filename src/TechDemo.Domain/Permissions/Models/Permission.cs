@@ -67,7 +67,7 @@ public class Permission : AggregateRoot
             return Result.Failure(PermissionErrors.InvalidEmployeeForename);
         }
 
-        EmployeeForename = employeeSurname;
+        EmployeeSurname = employeeSurname;
         return Result.Success();
     }
 

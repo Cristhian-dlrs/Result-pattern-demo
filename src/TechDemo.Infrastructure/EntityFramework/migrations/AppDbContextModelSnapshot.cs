@@ -28,6 +28,8 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
                     b.Property<string>("EmployeeForename")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -94,7 +96,7 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                         });
                 });
 
-            modelBuilder.Entity("TechDemo.Infrastructure.EntityFramework.Outbox.DeferredEvent", b =>
+            modelBuilder.Entity("TechDemo.Infrastructure.EntityFramework.DeferredEvent", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

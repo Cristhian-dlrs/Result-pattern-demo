@@ -31,13 +31,23 @@ internal class KafkaConsumer : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        _logger.LogInformation("Kafka consumer initialized.");
+
         try
         {
             _consumer.Subscribe(_options.DefaultTopic);
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                var result = _consumer.Consume(cancellationToken);
+                var result = _consumer.Consume(TimeSpan.FromSeconds(5));
+                if (result == null)
+                {
+                    continue;
+                }
+
                 var domainEvent = JsonSerializer.Deserialize<IDomainEvent>(result.Message.Value);
 
                 switch (domainEvent?.Operation)
@@ -64,6 +74,10 @@ internal class KafkaConsumer : BackgroundService
         catch (ConsumeException ex)
         {
             _logger.LogError(ex, "Error during message consumption.");
+        }
+        catch (TaskCanceledException)
+        {
+            _logger.LogInformation("Kafka consumer was shutting down.");
         }
         catch (Exception ex)
         {

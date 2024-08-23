@@ -29,7 +29,7 @@ internal class PermissionsRepository : IPermissionsRepository
             : Result<Permission>.Success(permission);
     }
 
-    public Result<None> UpdateAsync(Permission permission)
+    public Result<None> Update(Permission permission)
     {
         _dbContext.Permissions.Update(permission);
         return Result.Success();

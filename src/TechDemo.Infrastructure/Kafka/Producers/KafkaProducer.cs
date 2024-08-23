@@ -32,6 +32,10 @@ internal class KafkaProducer : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+
+        await Task.Delay(TimeSpan.FromSeconds(1));
+        _logger.LogInformation("Kafka producer initialized.");
+
         try
         {
             while (!cancellationToken.IsCancellationRequested)
@@ -40,9 +44,9 @@ internal class KafkaProducer : BackgroundService
                 var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
                 var messages = await dbContext.Set<DeferredEvent>()
-                    .Where(message => message.ProcessedOn == null)
+                    .Where(@event => @event.ProcessedOn == null)
+                    .OrderBy(@event => @event.OcurredOn)
                     .Take(_kafkaOptions.BatchSize)
-                    .OrderBy(message => message.OcurredOn)
                     .ToListAsync(cancellationToken);
 
                 foreach (var message in messages)
@@ -61,6 +65,10 @@ internal class KafkaProducer : BackgroundService
         catch (DbUpdateException ex)
         {
             _logger.LogError(ex, "Error saving changes to the database.");
+        }
+        catch (TaskCanceledException)
+        {
+            _logger.LogInformation("Kafka producer was shutting down.");
         }
         catch (Exception ex)
         {

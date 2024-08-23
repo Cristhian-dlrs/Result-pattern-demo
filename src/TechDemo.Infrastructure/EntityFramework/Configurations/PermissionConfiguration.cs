@@ -10,7 +10,9 @@ internal class PermissionConfiguration : IEntityTypeConfiguration<Permission>
     {
         builder.ToTable("Permissions");
         builder.HasKey(permission => permission.Id);
-        builder.Property(permission => permission.Id).ValueGeneratedOnAdd();
+        builder.Property(permission => permission.Id)
+        .ValueGeneratedOnAdd()
+        .UseIdentityColumn();
 
         builder.Property(permission => permission.PermissionDate).IsRequired();
 

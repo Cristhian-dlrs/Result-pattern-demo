@@ -34,7 +34,9 @@ public static class Extensions
             return client;
         });
 
-        services.AddSingleton<IElasticClient, ElasticClient>();
+        services.AddSingleton<IElasticClient>(provider =>
+                    provider.GetRequiredService<ElasticClient>());
+
         services.AddSingleton<IPermissionsViewRepository, PermissionsViewRepository>();
 
         return services;

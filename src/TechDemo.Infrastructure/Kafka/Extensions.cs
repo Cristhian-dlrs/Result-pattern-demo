@@ -43,6 +43,18 @@ public static class Extensions
             return new ConsumerBuilder<Ignore, string>(kafkaConfig).Build();
         });
 
+        services.AddSingleton(provider =>
+        {
+            var options = provider.GetRequiredService<IOptions<KafkaOptions>>().Value;
+            var kafkaConfig = new AdminClientConfig
+            {
+                BootstrapServers = options.BootstrapServers,
+                AllowAutoCreateTopics = options.AllowAutoCreateTopics,
+            };
+
+            return new AdminClientBuilder(kafkaConfig).Build();
+        });
+
         services
             .AddHostedService<KafkaProducer>()
             .AddHostedService<KafkaConsumer>();

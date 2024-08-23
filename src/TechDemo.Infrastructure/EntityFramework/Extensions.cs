@@ -28,30 +28,4 @@ public static class Extensions
         return services;
     }
 
-    public static async Task InitializeSqlDbAsync<T>(this IServiceProvider serviceProvider)
-    {
-        using (var scope = serviceProvider.CreateScope())
-        {
-            var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(TimeSpan.FromMinutes(5));
-
-            var services = scope.ServiceProvider;
-            var logger = services.GetRequiredService<ILogger<T>>();
-            var dbContext = services.GetRequiredService<AppDbContext>();
-
-            try
-            {
-                logger.LogInformation("Starting to apply database migrations...");
-
-                await dbContext.Database.MigrateAsync(cancellationTokenSource.Token);
-
-                logger.LogInformation("Database migrations applied successfully.");
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred while applying database migrations.");
-                throw;
-            }
-        }
-    }
 }

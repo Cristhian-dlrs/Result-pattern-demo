@@ -9,6 +9,7 @@ public static class Extensions
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services)
     {
+        services.AddHostedService<InitializationService>();
         services.AddKafkaWorkers();
         services.AddElasticSearch();
         services.AddEntityFramework();
