@@ -5,7 +5,7 @@ using TechDemo.Domain.Shared.Results;
 
 namespace TechDemo.Application.Permissions.Commands;
 
-internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermissionsCommand, Result<Empty>>
+internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermissionsCommand, Result<None>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -14,7 +14,7 @@ internal class RequestPermissionsCommandHandler : IRequestHandler<RequestPermiss
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Empty>> Handle(RequestPermissionsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<None>> Handle(RequestPermissionsCommand request, CancellationToken cancellationToken)
     {
         return await PermissionType.FromDescription(request.PermissionType)
             .MatchAsync(

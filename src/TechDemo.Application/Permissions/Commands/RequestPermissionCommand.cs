@@ -7,7 +7,7 @@ namespace TechDemo.Application.Permissions.Commands;
 public record RequestPermissionsCommand(
     string EmployeeForename,
     string EmployeeSurname,
-    string PermissionType) : IRequest<Result<Empty>>;
+    string PermissionType) : IRequest<Result<None>>;
 
 
 public class RequestPermissionsCommandValidator : AbstractValidator<RequestPermissionsCommand>

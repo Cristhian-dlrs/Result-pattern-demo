@@ -22,7 +22,7 @@ internal class UnitOfWork : IUnitOfWork
 
     public IPermissionsRepository PermissionsRepository { get; private set; }
 
-    public async Task<Result<Empty>> SaveChangesAsync(CancellationToken cancellationToken)
+    public async Task<Result<None>> SaveChangesAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         try

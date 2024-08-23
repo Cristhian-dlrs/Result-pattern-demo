@@ -14,7 +14,7 @@ public class Permission : AggregateRoot
 
     private Permission() { }
 
-    public Result<Empty> ModifyPermission(
+    public Result<None> ModifyPermission(
         string? employeeForename, string? employeeSurname, string? permissionType)
     {
         return Result.Success()
@@ -49,7 +49,7 @@ public class Permission : AggregateRoot
             });
     }
 
-    private Result<Empty> SetEmployeeForename(string employeeForename)
+    private Result<None> SetEmployeeForename(string employeeForename)
     {
         if (string.IsNullOrEmpty(employeeForename))
         {
@@ -60,7 +60,7 @@ public class Permission : AggregateRoot
         return Result.Success();
     }
 
-    private Result<Empty> SetEmployeeSurname(string employeeSurname)
+    private Result<None> SetEmployeeSurname(string employeeSurname)
     {
         if (string.IsNullOrEmpty(employeeSurname))
         {
@@ -71,7 +71,7 @@ public class Permission : AggregateRoot
         return Result.Success();
     }
 
-    private Result<Empty> SetPermissionType(string permissionType)
+    private Result<None> SetPermissionType(string permissionType)
     {
         return PermissionType.FromDescription(permissionType)
             .Map(permissionType =>

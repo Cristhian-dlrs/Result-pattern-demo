@@ -6,5 +6,5 @@ namespace TechDemo.Domain.Shared.Repositories;
 public interface IUnitOfWork : IDisposable
 {
     public IPermissionsRepository PermissionsRepository { get; }
-    public Task<Result<Empty>> SaveChangesAsync(CancellationToken cancellationToken);
+    public Task<Result<None>> SaveChangesAsync(CancellationToken cancellationToken);
 }

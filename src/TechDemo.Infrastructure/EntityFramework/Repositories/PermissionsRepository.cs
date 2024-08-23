@@ -12,7 +12,7 @@ internal class PermissionsRepository : IPermissionsRepository
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public Task<Result<Empty>> CreateAsync(Permission permission, CancellationToken cancellationToken)
+    public Task<Result<None>> CreateAsync(Permission permission, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
@@ -22,7 +22,7 @@ internal class PermissionsRepository : IPermissionsRepository
         throw new NotImplementedException();
     }
 
-    public Task<Result<Empty>> UpdateAsync(Permission permission, CancellationToken cancellationToken)
+    public Task<Result<None>> UpdateAsync(Permission permission, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

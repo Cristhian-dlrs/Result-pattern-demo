@@ -7,9 +7,9 @@ public interface IPermissionsViewRepository
     public Task<Result<IEnumerable<PermissionViewModel>>> GetAsync(
         string term, CancellationToken cancellationToken);
 
-    public Task<Result<Empty>> AddAsync(
+    public Task<Result<None>> AddAsync(
         PermissionViewModel permission, CancellationToken cancellationToken);
 
-    public Task<Result<Empty>> UpdateAsync(
+    public Task<Result<None>> UpdateAsync(
         PermissionViewModel permission, CancellationToken cancellationToken);
 }

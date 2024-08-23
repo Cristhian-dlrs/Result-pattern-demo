@@ -4,7 +4,7 @@ using TechDemo.Domain.Shared.Results;
 
 namespace TechDemo.Application.Permissions.Commands;
 
-internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissionsCommand, Result<Empty>>
+internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissionsCommand, Result<None>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -13,7 +13,7 @@ internal class ModifyPermissionsCommandHandler : IRequestHandler<ModifyPermissio
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<Empty>> Handle(ModifyPermissionsCommand request, CancellationToken cancellationToken)
+    public async Task<Result<None>> Handle(ModifyPermissionsCommand request, CancellationToken cancellationToken)
     {
         return await _unitOfWork.PermissionsRepository.GetByIdAsync(request.Id, cancellationToken).Unwrap()
             .MapAsync(permission =>

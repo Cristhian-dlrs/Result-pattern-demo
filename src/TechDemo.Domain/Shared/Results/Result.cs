@@ -71,14 +71,14 @@ public class Result<T>
 
 public static class Result
 {
-    public static Result<Empty> Success() => new(Empty.Value, true, Error.None);
+    public static Result<None> Success() => new(None.Value, true, Error.None);
 
-    public static Result<Empty> Failure(Error error) => new(Empty.Value, false, error);
+    public static Result<None> Failure(Error error) => new(None.Value, false, error);
 }
 
-public struct Empty
+public struct None
 {
-    public static readonly Empty Value = new Empty();
+    public static readonly None Value = new None();
 }
 
 public sealed record Error(string Code, string Description)

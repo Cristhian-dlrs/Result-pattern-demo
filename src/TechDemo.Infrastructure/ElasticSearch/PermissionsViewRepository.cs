@@ -35,7 +35,7 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
             : Result<IEnumerable<PermissionViewModel>>.Failure(ElasticSearchErrors.QueryError);
     }
 
-    public async Task<Result<Empty>> AddAsync(
+    public async Task<Result<None>> AddAsync(
         PermissionViewModel permission, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -47,7 +47,7 @@ internal class PermissionsViewRepository : IPermissionsViewRepository
             : Result.Failure(ElasticSearchErrors.AddViewError);
     }
 
-    public async Task<Result<Empty>> UpdateAsync(
+    public async Task<Result<None>> UpdateAsync(
         PermissionViewModel permission, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
