@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services
-        .AddInfrastructureServices(builder.Configuration)
+        .AddInfrastructureServices()
         .AddApplicationServices();
 }
 
