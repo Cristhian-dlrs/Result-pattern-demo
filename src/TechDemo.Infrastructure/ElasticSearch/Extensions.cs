@@ -1,3 +1,4 @@
+using FluentValidation.Validators;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nest;
@@ -40,7 +41,10 @@ public static class Extensions
                             elasticSearchOptions.DefaultIndex,
                             index => index.Map<PermissionViewModel>(permission => permission.AutoMap()));
 
-                    if (!result.IsValid) throw new Exception("Error on elastic search index creation.");
+                    if (result.ServerError.Error.Type != ElasticSearchErrors.IndexAlreadyCreated.Code)
+                    {
+                        throw new Exception("Error initializing elastic search");
+                    }
                 });
 
             return client;

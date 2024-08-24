@@ -18,7 +18,4 @@ var app = builder.Build();
 
 var permissionGroup = app.MapGroup("/api/v1");
 permissionGroup.AddPermissionsEndpoints();
-
-app.Run();
-
-// dotnet ef migrations add AddDeferredMessages --project ./src/TechDemo.infrastructure/ --startup-project ./src/TechDemo.api/ --output-dir EntityFramework/migrations
+app.Run("http://*:5001");

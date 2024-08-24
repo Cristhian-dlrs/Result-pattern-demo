@@ -8,6 +8,10 @@ public static class ElasticSearchErrors
         "ElasticSearchErrors.AddViewError",
         "Unable to add the view model.");
 
+    public static readonly Error IndexAlreadyCreated = new(
+        "resource_already_exists_exception",
+        "The index already exists and does not needs to be created.");
+
     public static readonly Error UpdateViewError = new(
         "ElasticSearchErrors.UpdateViewError",
         "Unable to update vew model.");
