@@ -23,6 +23,7 @@ services:
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "devP@ss123"
+    restart: always
     ports:
       - 1433:1433
     volumes:
@@ -78,6 +79,7 @@ services:
       - KAFKA_BROKER_ID=1
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+    restart: always
     volumes:
       - kafka-data:/kafka
     depends_on:

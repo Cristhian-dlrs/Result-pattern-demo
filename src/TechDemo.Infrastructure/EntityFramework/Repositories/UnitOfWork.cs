@@ -31,7 +31,7 @@ internal class UnitOfWork : IUnitOfWork
         return Result.Success();
     }
 
-    private IEnumerable<DeferredEvent> MapDomainEventsToDeferredEvents()
+    private List<DeferredEvent> MapDomainEventsToDeferredEvents()
     => _dbContext.ChangeTracker
         .Entries<AggregateRoot>()
         .Select(entry => entry.Entity)
@@ -39,7 +39,7 @@ internal class UnitOfWork : IUnitOfWork
         .SelectMany(aggregateRoot =>
         {
             var domainEvents = aggregateRoot.DomainEvents;
-            aggregateRoot.ClearDomainEvents();
+            aggregateRoot.FlushDomainEvents();
             return domainEvents;
         })
         .Select(domainEvent => new DeferredEvent
@@ -53,7 +53,7 @@ internal class UnitOfWork : IUnitOfWork
                     }),
             RegisteredOn = DateTime.UtcNow,
             ProcessedOn = null
-        });
+        }).ToList();
 
     public void Dispose() => _dbContext.Dispose();
 }
