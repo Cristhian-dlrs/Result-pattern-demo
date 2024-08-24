@@ -47,10 +47,10 @@ public static class PermissionsEndpoints
         .WithName("CreatePermissions");
 
         app.MapPatch(
-            "/permissions/{permissionId:int}",
+            "/permissions/{permissionId:Guid}",
             async (
                 CancellationToken cancellationToken,
-                ISender _sender, int permissionId,
+                ISender _sender, Guid permissionId,
                 [FromBody] ModifyPermissionRequest request) =>
         {
             return await _sender.Send(new ModifyPermissionsCommand(
