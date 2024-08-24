@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TechDemo.Domain.Shared.Repositories;
 using TechDemo.Infrastructure.EntityFramework;

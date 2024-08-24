@@ -36,23 +36,24 @@ internal class UnitOfWork : IUnitOfWork
         .Entries<AggregateRoot>()
         .Select(entry => entry.Entity)
         .Where(entity => entity.DomainEvents.Any())
-        .SelectMany(entity =>
+        .SelectMany(aggregateRoot =>
         {
-            var domainEvents = entity.DomainEvents;
-            entity.ClearDomainEvents();
+            var domainEvents = aggregateRoot.DomainEvents;
+            aggregateRoot.ClearDomainEvents();
             return domainEvents;
         })
-        .Select(domainEvent =>
-            new DeferredEvent(
-                Guid.NewGuid(),
-                JsonConvert.SerializeObject(
+        .Select(domainEvent => new DeferredEvent
+        {
+            Id = Guid.NewGuid(),
+            Payload = JsonConvert.SerializeObject(
                     domainEvent,
                     new JsonSerializerSettings
                     {
                         TypeNameHandling = TypeNameHandling.All
                     }),
-                DateTime.UtcNow,
-                null));
+            RegisteredOn = DateTime.UtcNow,
+            ProcessedOn = null
+        });
 
     public void Dispose() => _dbContext.Dispose();
 }

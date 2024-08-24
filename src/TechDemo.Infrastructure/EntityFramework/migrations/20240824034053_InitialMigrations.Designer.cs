@@ -12,8 +12,8 @@ using TechDemo.Infrastructure.EntityFramework;
 namespace TechDemo.Infrastructure.EntityFramework.migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240823231402_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240824034053_InitialMigrations")]
+    partial class InitialMigrations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,9 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
 
             modelBuilder.Entity("TechDemo.Domain.Permissions.Models.Permission", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("EmployeeForename")
                         .IsRequired()
@@ -105,13 +103,6 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("OcurredOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Operation")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Payload")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -119,18 +110,12 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                     b.Property<DateTime?>("ProcessedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("RegisteredOn")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.ToTable("DeferredMessages", (string)null);
-                });
-
-            modelBuilder.Entity("TechDemo.Domain.Permissions.Models.Permission", b =>
-                {
-                    b.HasOne("TechDemo.Domain.Permissions.Models.PermissionType", null)
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.ToTable("DeferredEvents", (string)null);
                 });
 #pragma warning restore 612, 618
         }

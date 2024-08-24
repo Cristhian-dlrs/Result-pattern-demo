@@ -10,14 +10,7 @@ internal class PermissionConfiguration : IEntityTypeConfiguration<Permission>
     {
         builder.ToTable("Permissions");
         builder.HasKey(permission => permission.Id);
-
         builder.Property(permission => permission.PermissionDate).IsRequired();
-
-        builder.HasOne<PermissionType>()
-            .WithMany()
-            .HasForeignKey(permissionType => permissionType.Id)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.NoAction);
 
         builder
             .Property(permission => permission.PermissionType)

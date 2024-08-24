@@ -1,11 +1,9 @@
 namespace TechDemo.Infrastructure.EntityFramework;
 
-internal sealed record DeferredEvent(
-    Guid Id,
-    string Payload,
-    DateTime RegisteredOn,
-    DateTime? ProcessedOn
-)
+public class DeferredEvent
 {
-    public DateTime? ProcessedOn { get; set; } = ProcessedOn;
+    public Guid Id { get; set; }
+    public string Payload { get; set; }
+    public DateTime RegisteredOn { get; set; }
+    public DateTime? ProcessedOn { get; set; }
 }

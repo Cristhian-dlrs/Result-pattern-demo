@@ -25,8 +25,8 @@ public class InitializationService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogInformation("Initializing Services...");
-        await InitializeSqlDbAsync();
         await InitializeKafkaAsync();
+        await InitializeSqlDbAsync();
     }
 
     private async Task InitializeSqlDbAsync()

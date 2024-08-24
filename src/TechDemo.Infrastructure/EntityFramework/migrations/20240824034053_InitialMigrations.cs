@@ -8,24 +8,38 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TechDemo.Infrastructure.EntityFramework.migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "DeferredMessages",
+                name: "DeferredEvents",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Operation = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Payload = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OcurredOn = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegisteredOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ProcessedOn = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeferredMessages", x => x.Id);
+                    table.PrimaryKey("PK_DeferredEvents", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmployeeForename = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    EmployeeSurname = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PermissionType = table.Column<int>(type: "int", nullable: false),
+                    PermissionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,27 +53,6 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PermissionTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Permissions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeForename = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EmployeeSurname = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PermissionType = table.Column<int>(type: "int", nullable: false),
-                    PermissionDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Permissions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Permissions_PermissionTypes_Id",
-                        column: x => x.Id,
-                        principalTable: "PermissionTypes",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -79,7 +72,7 @@ namespace TechDemo.Infrastructure.EntityFramework.migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "DeferredMessages");
+                name: "DeferredEvents");
 
             migrationBuilder.DropTable(
                 name: "Permissions");

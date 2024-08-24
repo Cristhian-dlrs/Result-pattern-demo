@@ -1,4 +1,5 @@
 using TechDemo.Domain.Permissions.Models.Events;
+using TechDemo.Domain.Permissions.ViewModels;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Results;
 
@@ -9,7 +10,7 @@ public class Permission : AggregateRoot
     public string EmployeeForename { get; private set; }
     public string EmployeeSurname { get; private set; }
     public PermissionType PermissionType { get; private set; }
-    public DateTime PermissionDate { get; }
+    public DateTime PermissionDate { get; private set; }
 
     private Permission() { }
 
@@ -28,12 +29,7 @@ public class Permission : AggregateRoot
                 : SetPermissionType(permissionType))
             .Then(_ =>
             {
-                AddDomainEvent(new PermissionRequestedEvent(
-                    Id,
-                    EmployeeForename,
-                    EmployeeSurname,
-                    PermissionType.Description,
-                    PermissionDate));
+                AddDomainEvent(new PermissionRequestedEvent(GetViewModel()));
                 return Result.Success();
             });
     }
@@ -41,18 +37,16 @@ public class Permission : AggregateRoot
     public static Result<Permission> Create(
         string employeeForename, string employeeSurname, string permissionType)
     {
-        var permission = new Permission { Id = Guid.NewGuid() };
+        var permission = new Permission();
         return permission.SetEmployeeForename(employeeForename)
             .Then(_ => permission.SetEmployeeSurname(employeeSurname))
             .Then(_ => permission.SetPermissionType(permissionType))
             .Then(_ =>
             {
-                permission.AddDomainEvent(new PermissionRequestedEvent(
-                    permission.Id,
-                    permission.EmployeeForename,
-                    permission.EmployeeSurname,
-                    permission.PermissionType.Description,
-                    permission.PermissionDate));
+                permission.Id = Guid.NewGuid();
+                permission.PermissionDate = DateTime.UtcNow;
+                permission.AddDomainEvent(
+                    new PermissionRequestedEvent(permission.GetViewModel()));
                 return Result<Permission>.Success(permission);
             });
     }
@@ -88,4 +82,12 @@ public class Permission : AggregateRoot
                 return Result.Success();
             });
     }
+
+    private PermissionViewModel GetViewModel()
+    => new PermissionViewModel(
+            Id,
+            EmployeeForename,
+            EmployeeSurname,
+            PermissionType.Description,
+            PermissionDate);
 }

@@ -12,7 +12,6 @@ internal class PermissionTypeConfiguration : IEntityTypeConfiguration<Permission
         builder.HasKey(permissionType => permissionType.Id);
         builder.Property(permissionType => permissionType.Id).ValueGeneratedOnAdd();
         builder.Property(permissionType => permissionType.Description).HasMaxLength(20);
-
         builder.HasData([.. PermissionType.PermissionTypes.ToArray()]);
     }
 }

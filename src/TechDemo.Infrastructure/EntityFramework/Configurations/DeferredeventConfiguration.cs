@@ -8,6 +8,6 @@ internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<Defe
 {
     public void Configure(EntityTypeBuilder<DeferredEvent> builder)
     {
-        builder.ToTable("DeferredMessages");
+        builder.ToTable("DeferredEvents");
     }
 }

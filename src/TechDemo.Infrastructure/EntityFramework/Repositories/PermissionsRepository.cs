@@ -14,10 +14,10 @@ internal class PermissionsRepository : IPermissionsRepository
         _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
-    public async Task<Result<Guid>> CreateAsync(Permission permission, CancellationToken cancellationToken)
+    public async Task<Result<None>> CreateAsync(Permission permission, CancellationToken cancellationToken)
     {
         await _dbContext.Permissions.AddAsync(permission, cancellationToken);
-        return Result<Guid>.Success(permission.Id);
+        return Result.Success();
     }
 
     public async Task<Result<Permission>> GetByIdAsync(Guid id, CancellationToken cancellationToken)
