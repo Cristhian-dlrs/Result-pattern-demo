@@ -14,26 +14,30 @@ internal class KafkaConsumer : BackgroundService
     private readonly IConsumer<Ignore, string> _consumer;
     private readonly KafkaOptions _options;
     ILogger<KafkaConsumer> _logger;
+    private readonly TaskCompletionSource<bool> _servicesInitializedSignal;
     private readonly IPermissionsViewRepository _permissionsViewRepository;
 
     public KafkaConsumer(
         IConsumer<Ignore, string> consumer,
         IOptions<KafkaOptions> options,
         IPermissionsViewRepository permissionsViewRepository,
-        ILogger<KafkaConsumer> logger)
+        ILogger<KafkaConsumer> logger,
+        TaskCompletionSource<bool> servicesInitializedSignal)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _consumer = consumer ?? throw new ArgumentNullException(nameof(consumer));
         _options = options.Value ?? throw new ArgumentNullException(nameof(options));
         _permissionsViewRepository = permissionsViewRepository
             ?? throw new ArgumentNullException(nameof(permissionsViewRepository));
+        _servicesInitializedSignal = servicesInitializedSignal
+            ?? throw new ArgumentNullException(nameof(servicesInitializedSignal));
     }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        await Task.Delay(TimeSpan.FromSeconds(1));
+        await _servicesInitializedSignal.Task;
         _logger.LogInformation("Kafka consumer initialized.");
 
         try

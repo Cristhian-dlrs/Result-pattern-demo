@@ -10,6 +10,7 @@ services:
   #     - "5001:5001"
   #   environment:
   #     - ASPNETCORE_ENVIRONMENT=Development
+  #   restart: always
   #   networks:
   #     - app-network
   #   depends_on:
@@ -39,6 +40,7 @@ services:
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
+    restart: always
     volumes:
       - elasticsearch-data:/usr/share/elasticseaach/data
     networks:
@@ -51,6 +53,7 @@ services:
       - 5601:5601
     environment:
       - ELASTICSEACH_URL=http://localhost:9200
+    restart: always
     networks:
       - app-network
     depends_on:
@@ -64,6 +67,7 @@ services:
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
+    restart: always
     volumes:
       - zookeeper_data:/data
     networks:

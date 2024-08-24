@@ -9,7 +9,8 @@ public static class Extensions
     public static IServiceCollection AddInfrastructureServices(
         this IServiceCollection services)
     {
-        services.AddHostedService<InitializationService>();
+        services.AddSingleton<TaskCompletionSource<bool>>();
+        services.AddHostedService<ServicesInitializer>();
         services.AddKafkaWorkers();
         services.AddElasticSearch();
         services.AddEntityFramework();

@@ -1,7 +1,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Nest;
+using Polly;
 using TechDemo.Domain.Permissions.ViewModels;
+using Policy = Polly.Policy;
 
 namespace TechDemo.Infrastructure.ElasticSearch;
 
@@ -27,9 +29,19 @@ public static class Extensions
 
             var client = new ElasticClient(settings);
 
-            client.Indices.Create(
-                elasticSearchOptions.DefaultIndex,
-                index => index.Map<PermissionViewModel>(permission => permission.AutoMap()));
+            Policy
+                .Handle<Exception>()
+                .WaitAndRetry(
+                    retryCount: 3,
+                    sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)))
+                .Execute(() =>
+                {
+                    var result = client.Indices.Create(
+                            elasticSearchOptions.DefaultIndex,
+                            index => index.Map<PermissionViewModel>(permission => permission.AutoMap()));
+
+                    if (!result.IsValid) throw new Exception("Error on elastic search index creation.");
+                });
 
             return client;
         });
