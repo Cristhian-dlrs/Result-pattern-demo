@@ -1,8 +1,8 @@
-using System.Text.Json;
 using Confluent.Kafka;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using TechDemo.Domain.Permissions.Models.Events;
 using TechDemo.Domain.Permissions.ViewModels;
 using TechDemo.Domain.Shared.Models;
@@ -48,7 +48,12 @@ internal class KafkaConsumer : BackgroundService
                     continue;
                 }
 
-                var domainEvent = JsonSerializer.Deserialize<IDomainEvent>(result.Message.Value);
+                var domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(
+                    result.Message.Value,
+                    new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.All
+                    });
 
                 switch (domainEvent?.Operation)
                 {

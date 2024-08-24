@@ -3,7 +3,7 @@ namespace TechDemo.Domain.Permissions.ViewModels;
 public class PermissionViewModel
 {
     public PermissionViewModel(
-        int id,
+        Guid id,
         string employeeForename,
         string employeeSurname,
         string permissionType,
@@ -16,7 +16,7 @@ public class PermissionViewModel
         PermissionDate = permissionDate;
     }
 
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string EmployeeForename { get; }
     public string EmployeeSurname { get; }
     public string PermissionType { get; }

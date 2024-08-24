@@ -5,11 +5,6 @@ using TechDemo.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 {
-    builder.Host.ConfigureHostOptions(options =>
-    {
-        options.BackgroundServiceExceptionBehavior = BackgroundServiceExceptionBehavior.Ignore;
-    });
-
     builder.Services
         .AddEndpointsApiExplorer()
         .AddInfrastructureServices()
@@ -18,7 +13,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var app = builder.Build();
 {
-    app.UseHttpsRedirection();
     app.UseGlobalExceptionHandler();
 }
 

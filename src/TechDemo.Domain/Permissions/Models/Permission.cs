@@ -1,5 +1,4 @@
 using TechDemo.Domain.Permissions.Models.Events;
-using TechDemo.Domain.Permissions.ViewModels;
 using TechDemo.Domain.Shared.Models;
 using TechDemo.Domain.Shared.Results;
 
@@ -29,7 +28,12 @@ public class Permission : AggregateRoot
                 : SetPermissionType(permissionType))
             .Then(_ =>
             {
-                AddDomainEvent(new PermissionRequestedEvent(ToViewModel()));
+                AddDomainEvent(new PermissionRequestedEvent(
+                    Id,
+                    EmployeeForename,
+                    EmployeeSurname,
+                    PermissionType.Description,
+                    PermissionDate));
                 return Result.Success();
             });
     }
@@ -37,14 +41,18 @@ public class Permission : AggregateRoot
     public static Result<Permission> Create(
         string employeeForename, string employeeSurname, string permissionType)
     {
-        var permission = new Permission();
+        var permission = new Permission { Id = Guid.NewGuid() };
         return permission.SetEmployeeForename(employeeForename)
             .Then(_ => permission.SetEmployeeSurname(employeeSurname))
             .Then(_ => permission.SetPermissionType(permissionType))
             .Then(_ =>
             {
-                permission.AddDomainEvent(
-                    new PermissionRequestedEvent(permission.ToViewModel()));
+                permission.AddDomainEvent(new PermissionRequestedEvent(
+                    permission.Id,
+                    permission.EmployeeForename,
+                    permission.EmployeeSurname,
+                    permission.PermissionType.Description,
+                    permission.PermissionDate));
                 return Result<Permission>.Success(permission);
             });
     }
@@ -79,15 +87,5 @@ public class Permission : AggregateRoot
                 PermissionType = permissionType;
                 return Result.Success();
             });
-    }
-
-    internal PermissionViewModel ToViewModel()
-    {
-        return new PermissionViewModel(
-            Id,
-            EmployeeForename,
-            EmployeeSurname,
-            PermissionType.Description,
-            PermissionDate);
     }
 }
