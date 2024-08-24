@@ -45,7 +45,7 @@ internal class KafkaProducer : BackgroundService
 
                 var messages = await dbContext.Set<DeferredEvent>()
                     .Where(@event => @event.ProcessedOn == null)
-                    .OrderBy(@event => @event.OcurredOn)
+                    .OrderBy(@event => @event.RegisteredOn)
                     .Take(_kafkaOptions.BatchSize)
                     .ToListAsync(cancellationToken);
 

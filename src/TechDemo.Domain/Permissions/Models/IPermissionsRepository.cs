@@ -4,7 +4,7 @@ namespace TechDemo.Domain.Permissions.Models;
 
 public interface IPermissionsRepository
 {
-    public Task<Result<Permission>> GetByIdAsync(int id, CancellationToken cancellationToken);
-    public Task<Result<None>> CreateAsync(Permission permission, CancellationToken cancellationToken);
+    public Task<Result<Permission>> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+    public Task<Result<Guid>> CreateAsync(Permission permission, CancellationToken cancellationToken);
     public Result<None> Update(Permission permission);
 }
