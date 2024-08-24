@@ -45,14 +45,14 @@ public class ServicesInitializer : BackgroundService
         _logger.LogInformation("Starting to apply database migrations...");
         await Policy
             .Handle<Exception>()
-            .WaitAndRetry(
+            .WaitAndRetryAsync(
                 retryCount: 3,
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
                 onRetry: (exception, timeSpan, attempt, context) =>
                 {
                     _logger.LogError(exception, "Retrying database migration due to transient failure...");
                 })
-            .Execute(() => dbContext.Database.MigrateAsync());
+            .ExecuteAsync(() => dbContext.Database.MigrateAsync());
     }
 
     private async Task InitializeKafkaAsync()
@@ -65,7 +65,7 @@ public class ServicesInitializer : BackgroundService
         await Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
-                retryCount: 3,
+                retryCount: 5,
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
                 onRetry: (exception, timeSpan, attempt, context) =>
                 {

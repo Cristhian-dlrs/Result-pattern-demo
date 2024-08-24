@@ -1,0 +1,10 @@
+@permissionId=2dba5a4c-67c6-4623-afdc-aba916d3301b
+
+PATCH  http://localhost:5001/api/v1/permissions/{{permissionId}}
+Content-Type: application/json
+
+{
+    "employeeForename": "John",
+    "employeeSurname": "Doe",
+    "permissionType": "publisher"
+}

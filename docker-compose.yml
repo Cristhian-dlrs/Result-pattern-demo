@@ -61,8 +61,8 @@ services:
       test:
         ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
       start_period: 10s
-      interval: 5s
-      retries: 5
+      interval: 2s
+      retries: 15
       timeout: 5s
 
   kibana:
@@ -118,8 +118,8 @@ services:
           "kafka-topics --bootstrap-server localhost:9092 --list || exit 1",
         ]
       start_period: 10s
-      interval: 5s
-      retries: 5
+      interval: 2s
+      retries: 15
       timeout: 5s
 
 volumes:
