@@ -53,8 +53,6 @@ public class ServicesInitializer : BackgroundService
                     _logger.LogError(exception, "Retrying database migration due to transient failure...");
                 })
             .Execute(() => dbContext.Database.MigrateAsync());
-
-        _logger.LogInformation("Database migrations applied successfully.");
     }
 
     private async Task InitializeKafkaAsync()
