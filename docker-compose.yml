@@ -42,7 +42,7 @@ services:
       - xpack.security.enabled=false
     restart: always
     volumes:
-      - elasticsearch-data:/usr/share/elasticseaach/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - app-network
 
