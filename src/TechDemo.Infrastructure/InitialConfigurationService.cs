@@ -18,7 +18,9 @@ public class InitialConfigurationService : BackgroundService
     private readonly TaskCompletionSource<bool> _taskCompletionSignal;
 
     public InitialConfigurationService(
-        IServiceScopeFactory serviceScopeFactory, ILogger<InitialConfigurationService> logger, TaskCompletionSource<bool> taskCompletionSignal)
+        IServiceScopeFactory serviceScopeFactory,
+        ILogger<InitialConfigurationService> logger,
+        TaskCompletionSource<bool> taskCompletionSignal)
     {
         _serviceScopeFactory = serviceScopeFactory
             ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
