@@ -2,8 +2,6 @@ namespace TechDemo.Domain.Shared.Results;
 
 public interface IResult
 {
-    public List<Error>? Errors { get; }
-
     public Error Error { get; }
 
     public bool IsFailure { get; }
@@ -33,22 +31,7 @@ public class Result<T> : IResult<T>
         _value = value;
     }
 
-    public Result(T? value, bool isSuccess, List<Error> errors)
-    {
-        if (isSuccess && errors.Any() ||
-            !isSuccess && !errors.Any())
-        {
-            throw new ArgumentException("Invalid state.", nameof(errors));
-        }
-
-        IsSuccess = isSuccess;
-        Errors = errors;
-        _value = value;
-    }
-
     public Error Error { get; }
-
-    public List<Error>? Errors { get; }
 
     public bool IsSuccess { get; }
 
@@ -62,8 +45,6 @@ public class Result<T> : IResult<T>
 
     public static Result<T> Failure(Error error) => new(default, false, error);
 
-    public static Result<T> ValidationFailures(List<Error> errors) => new(default, false, errors);
-
     public Result<TResult> Then<TResult>(Func<T, Result<TResult>> func) => IsSuccess
         ? func(Value)
         : Result<TResult>.Failure(Error);
@@ -72,11 +53,6 @@ public class Result<T> : IResult<T>
     => IsSuccess
         ? await func(Value)
         : Result<TResult>.Failure(Error);
-
-    public TResult MatchMany<TResult>(Func<T, TResult> onSuccess, Func<List<Error>?, TResult> onFailure)
-    => IsSuccess
-        ? onSuccess(Value)
-        : onFailure(Errors);
 
     public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<Error, TResult> onFailure)
     => IsSuccess
@@ -88,12 +64,6 @@ public class Result<T> : IResult<T>
     => IsSuccess
             ? await onSuccess(Value)
             : await onFailure(Error);
-
-    public async Task<TResult> MatchManyAsync<TResult>(
-        Func<T, Task<TResult>> onSuccess, Func<List<Error>?, Task<TResult>> onFailure)
-    => IsSuccess
-            ? await onSuccess(Value)
-            : await onFailure(Errors);
 
     public Result<TResult> Map<TResult>(Func<T, TResult> mapper) => IsSuccess
         ? Result<TResult>.Success(mapper(Value))
@@ -110,8 +80,8 @@ public class Result<T> : IResult<T>
         ? Success(value)
         : Failure(Error.NullValue);
 
-    public static implicit operator Result<T>(Error[]? errors)
-    => new Result<T>(default, false, [.. errors]);
+    public static implicit operator Result<T>(Error error)
+    => new Result<T>(default, false, error);
 }
 
 public static class Result
@@ -119,8 +89,6 @@ public static class Result
     public static Result<None> Success() => new(None.Value, true, Error.None);
 
     public static Result<None> Failure(Error error) => new(None.Value, false, error);
-
-    public static Result<None> ValidationFailures(List<Error> errors) => new(None.Value, false, errors);
 }
 
 public struct None
@@ -128,11 +96,13 @@ public struct None
     public static readonly None Value = new None();
 }
 
-public sealed record Error(string Code, string Description)
+public sealed record Error(string Code, string Description, List<ValidationError>? errors = null)
 {
     public static readonly Error None = new(string.Empty, string.Empty);
     public static readonly Error NullValue = new(nameof(Error), "The value cannot be null.");
 }
+
+public sealed record ValidationError(string Property, string ErrorMessage);
 
 public static class TaskExtensions
 {

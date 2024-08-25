@@ -25,10 +25,15 @@ public class ValidationBehavior<TRequest, TResponse>
 
         if (result.IsValid) return await next();
 
-        var errors = result.Errors.ConvertAll(error => new Error(
+        var errors = result.Errors.ConvertAll(error => new ValidationError(
             error.PropertyName,
-            error.ErrorMessage)).ToArray();
+            error.ErrorMessage));
 
-        return (dynamic)errors;
+        var validationError = new Error(
+            "Validation error.",
+            "One or more validation error ocurred.",
+            errors);
+
+        return (dynamic)validationError;
     }
 }

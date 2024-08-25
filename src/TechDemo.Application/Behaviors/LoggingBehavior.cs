@@ -31,7 +31,7 @@ public class LoggingBehavior<TRequest, TResponse>
             _logger.LogInformation(
                 "Fail to process Request {@RequestName}, {@Error}, {@Date}",
                 typeof(TRequest).Name,
-                result.Error is null ? result.Errors : result.Error,
+                result.Error,
                 DateTime.UtcNow);
 
         }

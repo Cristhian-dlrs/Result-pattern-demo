@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
 using TechDemo.Api.Middleware;
 using TechDemo.Api.Permissions.Endpoints;
 using TechDemo.Application;
@@ -8,7 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services
         .AddEndpointsApiExplorer()
         .AddInfrastructureServices()
-        .AddApplicationServices();
+        .AddApplicationServices()
+        .Configure<JsonOptions>(options =>
+            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 }
 
 var app = builder.Build();

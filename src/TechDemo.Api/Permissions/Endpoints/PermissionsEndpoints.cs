@@ -40,9 +40,9 @@ public static class PermissionsEndpoints
                     request.EmployeeSurname!,
                     request.PermissionType!), cancellationToken)
                 .Unwrap()
-                .MatchManyAsync(
+                .MatchAsync(
                     onSuccess: result => Task.FromResult(Results.Created()),
-                    onFailure: errors => Task.FromResult(Results.BadRequest(errors)));
+                    onFailure: error => Task.FromResult(Results.BadRequest(error)));
         })
         .WithName("CreatePermissions");
 
