@@ -9,13 +9,30 @@ public class Result<T>
         if (isSuccess && error != Error.None ||
             !isSuccess && error == Error.None)
         {
-            throw new ArgumentException("Invalid error", nameof(error));
+            throw new ArgumentException("Invalid state.", nameof(error));
         }
 
         IsSuccess = isSuccess;
         Error = error;
         _value = value;
     }
+
+    public Result(T? value, bool isSuccess, List<Error> errors)
+    {
+        if (isSuccess && errors.Any() ||
+            !isSuccess && !errors.Any())
+        {
+            throw new ArgumentException("Invalid state.", nameof(errors));
+        }
+
+        IsSuccess = isSuccess;
+        Errors = errors;
+        _value = value;
+    }
+
+    public Error Error { get; }
+
+    public List<Error>? Errors { get; }
 
     public bool IsSuccess { get; }
 
@@ -25,12 +42,11 @@ public class Result<T>
         ? _value!
         : throw new InvalidOperationException("No value to was founds.");
 
-    public Error Error { get; }
-
     public static Result<T> Success(T value) => new(value, true, Error.None);
 
     public static Result<T> Failure(Error error) => new(default, false, error);
 
+    public static Result<T> ValidationFailures(List<Error> errors) => new(default, false, errors);
 
     public Result<TResult> Then<TResult>(Func<T, Result<TResult>> func) => IsSuccess
         ? func(Value)
@@ -74,6 +90,8 @@ public static class Result
     public static Result<None> Success() => new(None.Value, true, Error.None);
 
     public static Result<None> Failure(Error error) => new(None.Value, false, error);
+
+    public static Result<None> ValidationFailures(List<Error> errors) => new(None.Value, false, errors);
 }
 
 public struct None

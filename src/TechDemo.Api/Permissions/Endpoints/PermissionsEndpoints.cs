@@ -41,7 +41,7 @@ public static class PermissionsEndpoints
                     request.PermissionType), cancellationToken)
                 .Unwrap()
                 .MatchAsync(
-                    onSuccess: result => Task.FromResult(Results.NoContent()),
+                    onSuccess: result => Task.FromResult(Results.Created()),
                     onFailure: error => Task.FromResult(Results.BadRequest(error)));
         })
         .WithName("CreatePermissions");

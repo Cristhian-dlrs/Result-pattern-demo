@@ -1,2 +1,4 @@
 
-GET http://localhost:5001/api/v1/permissions
+@searchTerm=her
+
+GET http://localhost:5001/api/v1/permissions?searchTerm={{searchTerm}}

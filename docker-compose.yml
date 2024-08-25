@@ -62,7 +62,7 @@ services:
         ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
       start_period: 10s
       interval: 2s
-      retries: 15
+      retries: 20
       timeout: 5s
 
   kibana:
