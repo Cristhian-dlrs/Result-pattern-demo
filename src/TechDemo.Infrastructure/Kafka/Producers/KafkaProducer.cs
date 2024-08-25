@@ -39,7 +39,7 @@ internal class KafkaProducer : BackgroundService
         cancellationToken.ThrowIfCancellationRequested();
 
         await _servicesInitializedSignal.Task;
-        _logger.LogInformation("Kafka producer initialized.");
+        _logger.LogInformation("Kafka producer initialized, {@Date}", DateTime.UtcNow);
 
         try
         {
@@ -65,19 +65,28 @@ internal class KafkaProducer : BackgroundService
         }
         catch (ProduceException<Null, string> ex)
         {
-            _logger.LogError(ex, "Error producing message.");
+            _logger.LogError(
+                "Error producing events {@Error}, {@Date}",
+                ex.Message,
+                DateTime.UtcNow);
         }
         catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Error saving changes to the database.");
+            _logger.LogError(
+                "Error updating deferred events {@Error}, {@Date}",
+                ex.Message,
+                DateTime.UtcNow);
         }
         catch (TaskCanceledException)
         {
-            _logger.LogInformation("Kafka producer was shutting down.");
+            _logger.LogError("Shutting down kafka producer, {@Date}", DateTime.UtcNow);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred when publishing events.");
+            _logger.LogError(
+                "Unhandled error on kafka producer: {@Error}, {@Date}",
+                ex.Message,
+                DateTime.UtcNow);
         }
     }
 
@@ -87,6 +96,9 @@ internal class KafkaProducer : BackgroundService
 
         var @event = new Message<Null, string> { Value = domainEvent };
         var producerResult = await _producer.ProduceAsync(_kafkaOptions.DefaultTopic, @event, cancellationToken);
-        _logger.LogInformation($"Event published {producerResult.Value}, Offset: {producerResult.Offset}");
+        _logger.LogInformation("Event published {@Payload}, {@Offset},  {@Date}",
+            producerResult.Message.Value,
+            producerResult.Offset,
+            DateTime.UtcNow);
     }
 }

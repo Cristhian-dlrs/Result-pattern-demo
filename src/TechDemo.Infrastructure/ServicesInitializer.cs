@@ -11,14 +11,14 @@ using Policy = Polly.Policy;
 
 namespace TechDemo.Infrastructure.Kafka;
 
-public class ServicesInitializer : BackgroundService
+public class InitialConfigurationService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly ILogger<ServicesInitializer> _logger;
+    private readonly ILogger<InitialConfigurationService> _logger;
     private readonly TaskCompletionSource<bool> _taskCompletionSignal;
 
-    public ServicesInitializer(
-        IServiceScopeFactory serviceScopeFactory, ILogger<ServicesInitializer> logger, TaskCompletionSource<bool> taskCompletionSignal)
+    public InitialConfigurationService(
+        IServiceScopeFactory serviceScopeFactory, ILogger<InitialConfigurationService> logger, TaskCompletionSource<bool> taskCompletionSignal)
     {
         _serviceScopeFactory = serviceScopeFactory
             ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
@@ -30,10 +30,11 @@ public class ServicesInitializer : BackgroundService
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Initializing Services...");
+        _logger.LogInformation("Start initial configuration, {@Date}", DateTime.UtcNow);
         await InitializeKafkaAsync();
         await InitializeSqlDbAsync();
         _taskCompletionSignal.SetResult(true);
+        _logger.LogInformation("Initial configuration completed, {@Date}", DateTime.UtcNow);
     }
 
     private async Task InitializeSqlDbAsync()
@@ -42,7 +43,8 @@ public class ServicesInitializer : BackgroundService
         var services = scope.ServiceProvider;
         var dbContext = services.GetRequiredService<AppDbContext>();
 
-        _logger.LogInformation("Starting to apply database migrations...");
+        _logger.LogInformation("Checking for migrations to apply, {@Date}", DateTime.UtcNow);
+
         await Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(
@@ -50,7 +52,10 @@ public class ServicesInitializer : BackgroundService
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
                 onRetry: (exception, timeSpan, attempt, context) =>
                 {
-                    _logger.LogError(exception, "Retrying database migration due to transient failure...");
+                    _logger.LogError(
+                        "Fail to apply migrations, {@Error}, {@Date}",
+                        exception.Message,
+                        DateTime.UtcNow);
                 })
             .ExecuteAsync(() => dbContext.Database.MigrateAsync());
     }
@@ -69,7 +74,10 @@ public class ServicesInitializer : BackgroundService
                 sleepDurationProvider: attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
                 onRetry: (exception, timeSpan, attempt, context) =>
                 {
-                    _logger.LogError(exception, "Retrying Kafka topic initialization due to transient failure...");
+                    _logger.LogError(
+                        "Fail to create kafka topic, {@Error}, {@Date}",
+                        exception.Message,
+                        DateTime.UtcNow);
                 })
             .ExecuteAsync(async () =>
             {
@@ -84,11 +92,11 @@ public class ServicesInitializer : BackgroundService
 
                 if (!metadata.Topics.Any(topic => topic.Topic == options.DefaultTopic))
                 {
-                    _logger.LogInformation("Initializing default topic...");
+                    _logger.LogInformation("Start default kafka topic creation, {@Date}", DateTime.UtcNow);
 
                     await adminClient.CreateTopicsAsync([topicSpecification]);
 
-                    _logger.LogInformation("Default topic initialized successfully.");
+                    _logger.LogInformation("Default kafka topic created, {@Date}", DateTime.UtcNow);
                 }
             });
     }

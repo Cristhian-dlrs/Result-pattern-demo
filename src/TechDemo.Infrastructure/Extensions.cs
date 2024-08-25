@@ -10,7 +10,7 @@ public static class Extensions
         this IServiceCollection services)
     {
         services.AddSingleton<TaskCompletionSource<bool>>();
-        services.AddHostedService<ServicesInitializer>();
+        services.AddHostedService<InitialConfigurationService>();
         services.AddKafkaWorkers();
         services.AddElasticSearch();
         services.AddEntityFramework();

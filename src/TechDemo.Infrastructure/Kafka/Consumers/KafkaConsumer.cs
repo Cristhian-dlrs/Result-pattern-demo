@@ -38,7 +38,7 @@ internal class KafkaConsumer : BackgroundService
         cancellationToken.ThrowIfCancellationRequested();
 
         await _servicesInitializedSignal.Task;
-        _logger.LogInformation("Kafka consumer initialized.");
+        _logger.LogInformation("Kafka consumer initialized, {@Date}", DateTime.UtcNow);
 
         try
         {
@@ -62,32 +62,46 @@ internal class KafkaConsumer : BackgroundService
                         var requestEvent = domainEvent as PermissionRequestedEvent;
                         var requestedPermission = requestEvent?.Permission;
                         await _permissionsViewRepository.AddAsync(requestedPermission!, cancellationToken);
+                        _logger.LogInformation(
+                            "Event processed {@EventName}, {@Payload}, {@Date}",
+                            requestEvent?.GetType().Name,
+                            requestEvent,
+                            DateTime.UtcNow);
                         break;
 
                     case nameof(Operations.Modify):
                         var modifyEvent = domainEvent as PermissionModifiedEvent;
                         var modifiedPermission = modifyEvent?.Permission;
                         await _permissionsViewRepository.UpdateAsync(modifiedPermission!, cancellationToken);
+                        _logger.LogInformation(
+                            "Event processed {@EventName}, {@Payload}, {@Date}",
+                            modifyEvent?.GetType().Name,
+                            modifyEvent,
+                            DateTime.UtcNow);
                         break;
 
                     default:
                         throw new InvalidOperationException("Unable to process event.");
                 }
-
-                _logger.LogInformation($"Event processed: {result.Message.Value}");
             }
         }
         catch (ConsumeException ex)
         {
-            _logger.LogError(ex, "Error during message consumption.");
+            _logger.LogError(
+                "Error consuming events {@Error}, {@Date}",
+                ex.Message,
+                DateTime.UtcNow);
         }
         catch (TaskCanceledException)
         {
-            _logger.LogInformation("Kafka consumer was shutting down.");
+            _logger.LogError("Shutting down kafka consumer {@Date}", DateTime.UtcNow);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred when processing events.");
+            _logger.LogError(
+                "Unhandled error on kafka producer: {@Error}, {@Date}",
+                ex.Message,
+                DateTime.UtcNow);
         }
     }
 }
