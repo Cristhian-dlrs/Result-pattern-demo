@@ -1,9 +1,8 @@
-
 POST  http://localhost:5001/api/v1/permissions
 Content-Type: application/json
 
 {
     "employeeForename": "John",
     "employeeSurname": "Doe",
-    "permissionType": "publisher"
+    "permissionType": "Owner"
 }
