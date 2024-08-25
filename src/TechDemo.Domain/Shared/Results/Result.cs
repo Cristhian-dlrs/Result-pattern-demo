@@ -1,6 +1,18 @@
 namespace TechDemo.Domain.Shared.Results;
 
-public class Result<T>
+public interface IResult
+{
+    public List<Error>? Errors { get; }
+
+    public bool IsFailure { get; }
+}
+
+public interface IResult<out T> : IResult
+{
+    T Value { get; }
+}
+
+public class Result<T> : IResult<T>
 {
     private readonly T? _value;
 
