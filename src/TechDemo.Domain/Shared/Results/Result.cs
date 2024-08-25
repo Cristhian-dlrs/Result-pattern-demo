@@ -4,7 +4,11 @@ public interface IResult
 {
     public List<Error>? Errors { get; }
 
+    public Error Error { get; }
+
     public bool IsFailure { get; }
+
+    public bool IsSuccess { get; }
 }
 
 public interface IResult<out T> : IResult
@@ -69,6 +73,11 @@ public class Result<T> : IResult<T>
         ? await func(Value)
         : Result<TResult>.Failure(Error);
 
+    public TResult MatchMany<TResult>(Func<T, TResult> onSuccess, Func<List<Error>?, TResult> onFailure)
+    => IsSuccess
+        ? onSuccess(Value)
+        : onFailure(Errors);
+
     public TResult Match<TResult>(Func<T, TResult> onSuccess, Func<Error, TResult> onFailure)
     => IsSuccess
         ? onSuccess(Value)
@@ -80,6 +89,11 @@ public class Result<T> : IResult<T>
             ? await onSuccess(Value)
             : await onFailure(Error);
 
+    public async Task<TResult> MatchManyAsync<TResult>(
+        Func<T, Task<TResult>> onSuccess, Func<List<Error>?, Task<TResult>> onFailure)
+    => IsSuccess
+            ? await onSuccess(Value)
+            : await onFailure(Errors);
 
     public Result<TResult> Map<TResult>(Func<T, TResult> mapper) => IsSuccess
         ? Result<TResult>.Success(mapper(Value))
@@ -95,6 +109,9 @@ public class Result<T> : IResult<T>
     public static implicit operator Result<T>(T? value) => value is not null
         ? Success(value)
         : Failure(Error.NullValue);
+
+    public static implicit operator Result<T>(Error[]? errors)
+    => new Result<T>(default, false, [.. errors]);
 }
 
 public static class Result

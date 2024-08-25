@@ -36,13 +36,13 @@ public static class PermissionsEndpoints
                 [FromBody] CreatePermissionRequest request) =>
         {
             return await _sender.Send(new RequestPermissionsCommand(
-                    request.EmployeeForename,
-                    request.EmployeeSurname,
-                    request.PermissionType), cancellationToken)
+                    request.EmployeeForename!,
+                    request.EmployeeSurname!,
+                    request.PermissionType!), cancellationToken)
                 .Unwrap()
-                .MatchAsync(
+                .MatchManyAsync(
                     onSuccess: result => Task.FromResult(Results.Created()),
-                    onFailure: error => Task.FromResult(Results.BadRequest(error)));
+                    onFailure: errors => Task.FromResult(Results.BadRequest(errors)));
         })
         .WithName("CreatePermissions");
 

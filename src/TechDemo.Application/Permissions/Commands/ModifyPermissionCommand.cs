@@ -9,12 +9,3 @@ public record ModifyPermissionsCommand(
     string? EmployeeForename,
     string? EmployeeSurname,
     string? PermissionType) : IRequest<Result<None>>;
-
-public class ModifyPermissionsCommandValidator : AbstractValidator<ModifyPermissionsCommand>
-{
-    public ModifyPermissionsCommandValidator()
-    {
-        RuleFor(x => x.Id)
-          .NotNull();
-    }
-}
