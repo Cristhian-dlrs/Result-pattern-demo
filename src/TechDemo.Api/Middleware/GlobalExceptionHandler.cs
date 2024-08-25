@@ -21,7 +21,7 @@ public class GlobalExceptionHandler
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Unhandled exception: {Message}", ex.Message);
+            _logger.LogError("Unhandled exception: {@Error}", ex.Message);
 
             var details = new ProblemDetails
             {

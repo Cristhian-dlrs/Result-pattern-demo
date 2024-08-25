@@ -10,6 +10,19 @@ services:
       - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - SERILOG__USING__0=Serilog.Sinks.Console
+      - SERILOG__USING__1=Serilog.Sinks.File
+      - SERILOG__MINIMUMLEVEL__DEFAULT=Information
+      - SERILOG__MINIMUMLEVEL__OVERRIDE__Microsoft=Warning
+      - SERILOG__MINIMUMLEVEL__OVERRIDE__System=Warning
+      - SERILOG__WRITETO__0__NAME=Console
+      - SERILOG__WRITETO__1__NAME=Elasticsearch
+      - SERILOG__WRITETO__1__ARGS__nodeUris=http://elasticsearch:9200
+      - SERILOG__WRITETO__1__ARGS__indexFormat=logs-{0:yyyy.MM.dd}
+      - SERILOG__WRITETO__1__ARGS__autoRegisterTemplate=true
+      - SERILOG__ENRICH__0=FromLogContext
+      - SERILOG__ENRICH__1=WithMachineName
+      - SERILOG__ENRICH__2=WithThreadId
       - KafkaOptions__BootstrapServers=kafka:29092
       - KafkaOptions__DefaultGroupId=permissions
       - KafkaOptions__DefaultTopic=permissions

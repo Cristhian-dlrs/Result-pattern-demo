@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http.Json;
+using Serilog;
 using TechDemo.Api.Middleware;
 using TechDemo.Api.Permissions.Endpoints;
 using TechDemo.Application;
@@ -13,10 +14,14 @@ var builder = WebApplication.CreateBuilder(args);
         .AddApplicationServices()
         .Configure<JsonOptions>(options =>
             options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+
+    builder.Host.UseSerilog((context, config) =>
+        config.ReadFrom.Configuration(context.Configuration));
 }
 
 var app = builder.Build();
 {
+    app.UseSerilogRequestLogging();
     app.UseGlobalExceptionHandler();
 }
 
