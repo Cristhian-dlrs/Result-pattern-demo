@@ -29,7 +29,7 @@ public class Permission : AggregateRoot
                 : SetPermissionType(permissionType))
             .Then(_ =>
             {
-                AddDomainEvent(new PermissionRequestedEvent(GetViewModel()));
+                AddDomainEvent(new PermissionModifiedEvent(GetViewModel()));
                 return Result.Success();
             });
     }
@@ -66,7 +66,7 @@ public class Permission : AggregateRoot
     {
         if (string.IsNullOrEmpty(employeeSurname))
         {
-            return Result.Failure(PermissionErrors.InvalidEmployeeForename);
+            return Result.Failure(PermissionErrors.InvalidEmployeeSurname);
         }
 
         EmployeeSurname = employeeSurname;
