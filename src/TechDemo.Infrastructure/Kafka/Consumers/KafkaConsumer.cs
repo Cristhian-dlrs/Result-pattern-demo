@@ -46,7 +46,7 @@ internal class KafkaConsumer : BackgroundService
 
             while (!cancellationToken.IsCancellationRequested)
             {
-                var result = _consumer.Consume(TimeSpan.FromSeconds(5));
+                var result = _consumer.Consume();
                 if (result == null) continue;
 
                 var domainEvent = JsonConvert.DeserializeObject<IDomainEvent>(
