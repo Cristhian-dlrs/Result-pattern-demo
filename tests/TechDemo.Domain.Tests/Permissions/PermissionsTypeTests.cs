@@ -1,8 +1,6 @@
-
 using TechDemo.Domain.Permissions.Models;
-using TechDemo.Domain.Permissions.Models.Events;
 
-namespace TechDemo.Domain.Tests;
+namespace TechDemo.Domain.Tests.Permissions;
 
 public class PermissionsTypeTests
 {
