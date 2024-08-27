@@ -16,7 +16,7 @@ There is only one requirement to run this application in your machine:
 git clone https://github.com/Cristhian-dlrs/TechDemoN5.git 
 ```
 
-- Buid the application with docker compose.
+- Build the application with docker compose.
 
 ```
 docker compose up -d --build

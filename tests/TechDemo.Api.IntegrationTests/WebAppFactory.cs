@@ -18,14 +18,17 @@ public class WebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public WebAppFactory()
     {
-        _appNetwork = new NetworkBuilder()
-            .WithName("app-network")
-            .Build();
+        _appNetwork = new NetworkBuilder().Build();
 
         _sqlServerContainer = new SqlEdgeBuilder()
             .WithName("sqlserver")
             .WithImage("mcr.microsoft.com/azure-sql-edge")
-            .WithEnvironment("ACCEPT_EULA", "Y")
+            .WithEnvironment(
+                new Dictionary<string, string>
+                {
+                    { "ACCEPT_EULA", "Y" },
+                    {"MSSQL_SA_PASSWORD", "devP@ss123"}
+                })
             .WithPortBinding(1433, 1433)
             .WithNetwork(_appNetwork)
             .WithWaitStrategy(Wait.ForUnixContainer())
@@ -35,8 +38,12 @@ public class WebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
             .WithImage("confluentinc/cp-zookeeper")
             .WithName("zookeeper")
             .WithPortBinding(2181, 2181)
-            .WithEnvironment("ZOOKEEPER_CLIENT_PORT", "2181")
-            .WithEnvironment("ZOOKEEPER_TICK_TIME", "2000")
+            .WithEnvironment(
+                new Dictionary<string, string>
+                {
+                    { "ZOOKEEPER_CLIENT_PORT", "2181" },
+                    { "ZOOKEEPER_TICK_TIME", "2000" }
+                })
             .WithNetwork(_appNetwork)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(2181))
             .Build();
@@ -44,12 +51,16 @@ public class WebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         _kafkaContainer = new KafkaBuilder()
             .WithName("kafka")
             .WithImage("confluentinc/cp-kafka")
-            .WithEnvironment("KAFKA_INTER_BROKER_LISTENER_NAME", "INSIDE")
-            .WithEnvironment("KAFKA_ADVERTISED_LISTENERS", "INSIDE://kafka:29092,OUTSIDE://localhost:9092")
-            .WithEnvironment("KAFKA_LISTENERS", "INSIDE://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092")
-            .WithEnvironment("KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT")
-            .WithEnvironment("KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1")
-            .WithEnvironment("KAFKA_ZOOKEEPER_CONNECT", "zookeeper:2181")
+            .WithEnvironment(
+                new Dictionary<string, string>
+                {
+                    { "KAFKA_ZOOKEEPER_CONNECT", "zookeeper:2181" },
+                    { "KAFKA_INTER_BROKER_LISTENER_NAME", "INSIDE" },
+                    { "KAFKA_LISTENERS", "INSIDE://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092" },
+                    { "KAFKA_ADVERTISED_LISTENERS", "INSIDE://kafka:29092,OUTSIDE://localhost:9092" },
+                    { "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP", "INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT" },
+                    { "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1" }
+                })
             .DependsOn(_zookeeperContainer)
             .WithPortBinding(9092, 9092)
             .WithNetwork(_appNetwork)
@@ -59,8 +70,12 @@ public class WebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
         _elasticsearchContainer = new ElasticsearchBuilder()
             .WithName("elasticsearch")
             .WithImage("docker.elastic.co/elasticsearch/elasticsearch:8.7.1")
-            .WithEnvironment("discovery.type", "single-node")
-            .WithEnvironment("xpack.security.enabled", "false")
+            .WithEnvironment(
+                new Dictionary<string, string>
+                {
+                    { "discovery.type", "single-node" },
+                    { "xpack.security.enabled", "false" }
+                })
             .WithPortBinding(9200, 9200)
             .WithNetwork(_appNetwork)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(9200))
