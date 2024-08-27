@@ -4,7 +4,7 @@
 
 ## Requirements
 
-There is only one app in your machine:
+There is only one requirement to run this application in your machine:
 
 - Docker
 
