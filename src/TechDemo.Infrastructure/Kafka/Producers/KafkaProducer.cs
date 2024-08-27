@@ -15,30 +15,24 @@ internal class KafkaProducer : BackgroundService
     private readonly KafkaOptions _kafkaOptions;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly ILogger<KafkaProducer> _logger;
-    private readonly TaskCompletionSource<bool> _servicesInitializedSignal;
-
 
     public KafkaProducer(
         IProducer<Null, string> producer,
         IOptions<KafkaOptions> kafkaOptions,
         ILogger<KafkaProducer> logger,
-        IServiceScopeFactory serviceScopeFactory,
-        TaskCompletionSource<bool> servicesInitializedSignal)
+        IServiceScopeFactory serviceScopeFactory)
     {
         _producer = producer ?? throw new ArgumentNullException(nameof(producer));
         _serviceScopeFactory = serviceScopeFactory
             ?? throw new ArgumentNullException(nameof(serviceScopeFactory));
         _kafkaOptions = kafkaOptions.Value ?? throw new ArgumentNullException(nameof(kafkaOptions));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _servicesInitializedSignal = servicesInitializedSignal
-            ?? throw new ArgumentNullException(nameof(servicesInitializedSignal));
     }
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        await _servicesInitializedSignal.Task;
         _logger.LogInformation("Kafka producer initialized, {@Date}", DateTime.UtcNow);
 
         try

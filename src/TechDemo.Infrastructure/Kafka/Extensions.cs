@@ -56,8 +56,8 @@ public static class Extensions
         });
 
         services
-            .AddHostedService<KafkaProducer>()
-            .AddHostedService<KafkaConsumer>();
+            .AddHostedService<KafkaConsumer>()
+            .AddHostedService<KafkaProducer>();
 
         return services;
     }
