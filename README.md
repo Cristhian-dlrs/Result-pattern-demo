@@ -2,7 +2,7 @@
 
 .NET technical demo api.
 
-Disclaimer: This project serves primarily as a proof of concept, showcasing various features and implementations. While it includes functional components, most of the features are experimental and intended for demonstration and learning purposes.
+Disclaimer: This project serves primarily as a proof of concept, showcasing various features and implementations for demonstration purposes.
 
 ## Requirements
 
