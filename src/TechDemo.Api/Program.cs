@@ -28,3 +28,5 @@ var app = builder.Build();
 var permissionGroup = app.MapGroup("/api/v1");
 permissionGroup.AddPermissionsEndpoints();
 app.Run("http://*:5001");
+
+public partial class Program;
