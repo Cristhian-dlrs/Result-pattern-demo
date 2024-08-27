@@ -19,7 +19,7 @@ git clone https://github.com/Cristhian-dlrs/TechDemoN5.git
 - Buid the application with docker compose.
 
 ```
-    docker compose up -d --build
+docker compose up -d --build
 ```
 
 - Use the http files in the requests folder to test the different endpoints.
