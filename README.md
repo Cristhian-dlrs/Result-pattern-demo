@@ -22,4 +22,4 @@ git clone https://github.com/Cristhian-dlrs/TechDemoN5.git
 docker compose up -d --build
 ```
 
-- Use the http files in the requests folder to test the different endpoints.
+- Use the http files in the [requests](requests/) folder to test the different endpoints.
