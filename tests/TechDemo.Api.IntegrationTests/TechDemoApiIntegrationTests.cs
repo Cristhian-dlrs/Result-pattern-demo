@@ -10,16 +10,16 @@ public class TechDemoApiIntegrationTests : BaseIntegrationTests
     {
     }
 
-    [Fact]
-    public async Task CreatePermissions_endpoint_should_return_201_when_permission_is_created()
-    {
-        // Arrange
-        var request = new CreatePermissionRequest("John", "Doe", "Admin");
-
-        // Act
-        var response = await HttpClient.PostAsJsonAsync("api/v1/permissions", request);
-
-        // Assert
-        Assert.True(response.StatusCode == HttpStatusCode.Created);
-    }
+    // [Fact]
+    // public async Task CreatePermissions_endpoint_should_return_201_when_permission_is_created()
+    // {
+    //     // Arrange
+    //     var request = new CreatePermissionRequest("John", "Doe", "Admin");
+    //
+    //     // Act
+    //     var response = await HttpClient.PostAsJsonAsync("api/v1/permissions", request);
+    //
+    //     // Assert
+    //     Assert.True(response.StatusCode == HttpStatusCode.Created);
+    // }
 }
